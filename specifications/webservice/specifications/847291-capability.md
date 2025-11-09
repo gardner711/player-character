@@ -36,7 +36,7 @@ Standard web service template
 
 | Capability ID | Description |
 |---------------|-------------|
-| N/A | No downstream impacts |
+| CAP-978746 | Player Character CRUD API |
 
 ### External Dependencies
 
