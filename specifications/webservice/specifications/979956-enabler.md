@@ -23,6 +23,7 @@ Implement the core CRUD operations for player characters through RESTful API end
 |----|------|-------------|----------|--------|----------|
 | FR-979958 | Create Character | Implement POST /api/characters endpoint to create new characters with auto-generated IDs | Must Have | Ready for Implementation | Approved |
 | FR-979959 | List Characters | Implement GET /api/characters endpoint to retrieve paginated list of all characters | Must Have | Ready for Implementation | Approved |
+| FR-979965 | Pagination Support | Support page and limit query parameters for paginated results with default page=1, limit=20, max limit=100 | Must Have | Ready for Implementation | Approved |
 | FR-979960 | Get Character | Implement GET /api/characters/{id} endpoint to retrieve a specific character by ID | Must Have | Ready for Implementation | Approved |
 | FR-979961 | Update Character | Implement PUT /api/characters/{id} endpoint to update existing characters | Must Have | Ready for Implementation | Approved |
 | FR-979962 | Delete Character | Implement DELETE /api/characters/{id} endpoint to remove characters | Must Have | Ready for Implementation | Approved |
@@ -72,8 +73,24 @@ Implement the core CRUD operations for player characters through RESTful API end
 #### List Characters
 - **Method**: GET
 - **Path**: /api/characters
-- **Query Parameters**: page, limit for pagination
-- **Response**: 200 OK with array of characters
+- **Query Parameters**:
+  - `page` (optional): Page number, defaults to 1
+  - `limit` (optional): Number of items per page, defaults to 20, maximum 100
+- **Response**: 200 OK with paginated character data
+- **Response Format**:
+  ```json
+  {
+    "data": [/* array of character objects */],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 150,
+      "totalPages": 8,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+  ```
 
 #### Get Character
 - **Method**: GET
@@ -97,3 +114,6 @@ Implement the core CRUD operations for player characters through RESTful API end
 - Implement proper error handling and logging
 - Consider rate limiting for production deployment
 - Support both JSON and potentially other content types if needed
+- Implement efficient database pagination (e.g., OFFSET/LIMIT or cursor-based)
+- Validate pagination parameters (page >= 1, 1 <= limit <= 100)
+- Return consistent pagination metadata in all list responses
