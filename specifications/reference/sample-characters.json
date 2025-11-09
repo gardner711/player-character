@@ -1,0 +1,1007 @@
+[
+    {
+        "characterName": "Thorin Ironforge",
+        "playerName": "Sample Player 1",
+        "race": "Dwarf",
+        "subrace": "Mountain Dwarf",
+        "class": "Fighter",
+        "subclass": "Champion",
+        "level": 5,
+        "experiencePoints": 6500,
+        "background": "Soldier",
+        "alignment": "Lawful Good",
+        "abilityScores": {
+            "strength": {
+                "score": 18,
+                "modifier": 4,
+                "savingThrowProficiency": true
+            },
+            "dexterity": {
+                "score": 12,
+                "modifier": 1,
+                "savingThrowProficiency": false
+            },
+            "constitution": {
+                "score": 16,
+                "modifier": 3,
+                "savingThrowProficiency": true
+            },
+            "intelligence": {
+                "score": 10,
+                "modifier": 0,
+                "savingThrowProficiency": false
+            },
+            "wisdom": {
+                "score": 13,
+                "modifier": 1,
+                "savingThrowProficiency": false
+            },
+            "charisma": {
+                "score": 8,
+                "modifier": -1,
+                "savingThrowProficiency": false
+            }
+        },
+        "proficiencyBonus": 3,
+        "skills": {
+            "acrobatics": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "animalHandling": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "arcana": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "athletics": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 7
+            },
+            "deception": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": -1
+            },
+            "history": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "insight": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "intimidation": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 2
+            },
+            "investigation": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "medicine": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "nature": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "perception": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 4
+            },
+            "performance": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": -1
+            },
+            "persuasion": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": -1
+            },
+            "religion": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "sleightOfHand": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "stealth": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "survival": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 4
+            }
+        },
+        "hitPoints": {
+            "maximum": 47,
+            "current": 47,
+            "temporary": 0,
+            "hitDice": {
+                "total": "5d10",
+                "current": "5d10"
+            }
+        },
+        "armorClass": 18,
+        "initiative": 1,
+        "speed": {
+            "walking": 25
+        },
+        "passivePerception": 14,
+        "inspiration": false,
+        "deathSaves": {
+            "successes": 0,
+            "failures": 0
+        },
+        "languages": [
+            "Common",
+            "Dwarvish"
+        ],
+        "proficiencies": {
+            "armor": [
+                "Light Armor",
+                "Medium Armor",
+                "Heavy Armor",
+                "Shields"
+            ],
+            "weapons": [
+                "Simple Weapons",
+                "Martial Weapons"
+            ],
+            "tools": [
+                "Smith's Tools",
+                "Dice Set",
+                "Vehicles (Land)"
+            ]
+        },
+        "features": [
+            {
+                "name": "Darkvision",
+                "source": "Race",
+                "description": "You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light."
+            },
+            {
+                "name": "Dwarven Resilience",
+                "source": "Race",
+                "description": "You have advantage on saving throws against poison, and resistance against poison damage."
+            },
+            {
+                "name": "Stonecunning",
+                "source": "Race",
+                "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient and add double your proficiency bonus."
+            },
+            {
+                "name": "Fighting Style: Defense",
+                "source": "Class",
+                "description": "While wearing armor, you gain a +1 bonus to AC."
+            },
+            {
+                "name": "Second Wind",
+                "source": "Class",
+                "description": "You can use a bonus action to regain 1d10 + 5 hit points.",
+                "uses": {
+                    "maximum": 1,
+                    "current": 1,
+                    "rechargeOn": "Short Rest"
+                }
+            },
+            {
+                "name": "Action Surge",
+                "source": "Class",
+                "description": "You can take one additional action on your turn.",
+                "uses": {
+                    "maximum": 1,
+                    "current": 1,
+                    "rechargeOn": "Short Rest"
+                }
+            },
+            {
+                "name": "Improved Critical",
+                "source": "Class",
+                "description": "Your weapon attacks score a critical hit on a roll of 19 or 20."
+            },
+            {
+                "name": "Extra Attack",
+                "source": "Class",
+                "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+            }
+        ],
+        "feats": [],
+        "inventory": {
+            "currency": {
+                "copper": 50,
+                "silver": 20,
+                "electrum": 0,
+                "gold": 125,
+                "platinum": 3
+            },
+            "weapons": [
+                {
+                    "name": "Battleaxe",
+                    "type": "Martial Melee",
+                    "damage": "1d8",
+                    "damageType": "Slashing",
+                    "properties": [
+                        "Versatile (1d10)"
+                    ],
+                    "attackBonus": 7,
+                    "damageBonus": 4,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "quantity": 1,
+                    "weight": 4,
+                    "description": "A sturdy dwarven battleaxe with family runes."
+                },
+                {
+                    "name": "Handaxe",
+                    "type": "Simple Melee",
+                    "damage": "1d6",
+                    "damageType": "Slashing",
+                    "properties": [
+                        "Light",
+                        "Thrown (range 20/60)"
+                    ],
+                    "attackBonus": 7,
+                    "damageBonus": 4,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "quantity": 2,
+                    "weight": 2,
+                    "description": "Throwing axes for ranged combat."
+                }
+            ],
+            "armor": [
+                {
+                    "name": "Chain Mail",
+                    "type": "Heavy Armor",
+                    "armorClass": 16,
+                    "dexterityBonus": "none",
+                    "stealthDisadvantage": true,
+                    "strengthRequirement": 13,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "weight": 55,
+                    "description": "Heavy chain mail armor."
+                },
+                {
+                    "name": "Shield",
+                    "type": "Shield",
+                    "armorClass": 2,
+                    "dexterityBonus": "none",
+                    "stealthDisadvantage": false,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "weight": 6,
+                    "description": "A sturdy wooden shield with iron banding."
+                }
+            ],
+            "equipment": [
+                {
+                    "name": "Backpack",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 5,
+                    "description": "Contains various adventuring supplies.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Bedroll",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 7,
+                    "description": "A bedroll for sleeping outdoors.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Rope, Hempen (50 feet)",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 10,
+                    "description": "50 feet of strong hempen rope.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Rations (1 day)",
+                    "type": "Adventuring Gear",
+                    "quantity": 10,
+                    "weight": 2,
+                    "description": "Dried food for travel.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Waterskin",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 5,
+                    "description": "A leather waterskin filled with water.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Tinderbox",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 1,
+                    "description": "For starting fires.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Torch",
+                    "type": "Adventuring Gear",
+                    "quantity": 10,
+                    "weight": 1,
+                    "description": "Wooden torches.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Potion of Healing",
+                    "type": "Potion",
+                    "quantity": 2,
+                    "weight": 0.5,
+                    "description": "Restores 2d4+2 hit points when consumed.",
+                    "magical": true,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Smith's Tools",
+                    "type": "Tool",
+                    "quantity": 1,
+                    "weight": 8,
+                    "description": "Tools for smithing and metalwork.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                }
+            ],
+            "carryingCapacity": {
+                "maximum": 270,
+                "current": 145,
+                "encumbered": false,
+                "heavilyEncumbered": false
+            }
+        },
+        "personality": {
+            "personalityTraits": [
+                "I'm always polite and respectful.",
+                "I face problems head-on. A simple, direct solution is the best path to success."
+            ],
+            "ideals": [
+                "Greater Good: Our lot is to lay down our lives in defense of others."
+            ],
+            "bonds": [
+                "I would still lay down my life for the people I served with.",
+                "My honor is my life."
+            ],
+            "flaws": [
+                "I made a terrible mistake in battle that cost many lives—and I would do anything to keep that mistake secret."
+            ]
+        },
+        "appearance": {
+            "age": 87,
+            "height": "4'6\"",
+            "weight": "185 lbs",
+            "eyes": "Brown",
+            "skin": "Ruddy tan",
+            "hair": "Long brown beard, bald head",
+            "appearance": "A stout mountain dwarf with a magnificent braided beard and numerous battle scars. Wears well-maintained chain mail and carries a family battleaxe."
+        },
+        "backstory": "Thorin served for decades in the dwarven military, defending his mountain home from goblin incursions. After a tragic battle where his tactical error cost lives, he left his homeland to seek redemption through heroic deeds.",
+        "allies": [
+            "The Ironforge Clan",
+            "Veterans of the Mountain Guard"
+        ],
+        "treasure": [
+            "Family battleaxe with ancestral runes",
+            "Military insignia from the Mountain Guard"
+        ],
+        "notes": "Seeking redemption for past mistakes. Loyal to companions and believes in protecting the innocent."
+    },
+    {
+        "characterName": "Elara Moonwhisper",
+        "playerName": "Sample Player 2",
+        "race": "Elf",
+        "subrace": "High Elf",
+        "class": "Wizard",
+        "subclass": "Evocation",
+        "level": 7,
+        "experiencePoints": 23000,
+        "background": "Sage",
+        "alignment": "Neutral Good",
+        "abilityScores": {
+            "strength": {
+                "score": 8,
+                "modifier": -1,
+                "savingThrowProficiency": false
+            },
+            "dexterity": {
+                "score": 14,
+                "modifier": 2,
+                "savingThrowProficiency": false
+            },
+            "constitution": {
+                "score": 13,
+                "modifier": 1,
+                "savingThrowProficiency": false
+            },
+            "intelligence": {
+                "score": 18,
+                "modifier": 4,
+                "savingThrowProficiency": true
+            },
+            "wisdom": {
+                "score": 12,
+                "modifier": 1,
+                "savingThrowProficiency": true
+            },
+            "charisma": {
+                "score": 10,
+                "modifier": 0,
+                "savingThrowProficiency": false
+            }
+        },
+        "proficiencyBonus": 3,
+        "skills": {
+            "acrobatics": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 2
+            },
+            "animalHandling": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "arcana": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 7
+            },
+            "athletics": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": -1
+            },
+            "deception": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "history": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 7
+            },
+            "insight": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 4
+            },
+            "intimidation": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "investigation": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 7
+            },
+            "medicine": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            },
+            "nature": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 4
+            },
+            "perception": {
+                "proficient": true,
+                "expertise": false,
+                "modifier": 4
+            },
+            "performance": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "persuasion": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 0
+            },
+            "religion": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 4
+            },
+            "sleightOfHand": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 2
+            },
+            "stealth": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 2
+            },
+            "survival": {
+                "proficient": false,
+                "expertise": false,
+                "modifier": 1
+            }
+        },
+        "hitPoints": {
+            "maximum": 38,
+            "current": 38,
+            "temporary": 0,
+            "hitDice": {
+                "total": "7d6",
+                "current": "7d6"
+            }
+        },
+        "armorClass": 12,
+        "initiative": 2,
+        "speed": {
+            "walking": 30
+        },
+        "passivePerception": 14,
+        "inspiration": false,
+        "deathSaves": {
+            "successes": 0,
+            "failures": 0
+        },
+        "languages": [
+            "Common",
+            "Elvish",
+            "Draconic",
+            "Celestial"
+        ],
+        "proficiencies": {
+            "armor": [],
+            "weapons": [
+                "Longsword",
+                "Shortsword",
+                "Shortbow",
+                "Longbow",
+                "Daggers",
+                "Darts",
+                "Slings",
+                "Quarterstaffs",
+                "Light Crossbows"
+            ],
+            "tools": []
+        },
+        "features": [
+            {
+                "name": "Darkvision",
+                "source": "Race",
+                "description": "You can see in dim light within 60 feet as if it were bright light."
+            },
+            {
+                "name": "Fey Ancestry",
+                "source": "Race",
+                "description": "Advantage on saving throws against being charmed, and magic can't put you to sleep."
+            },
+            {
+                "name": "Trance",
+                "source": "Race",
+                "description": "Elves don't need to sleep. Instead, they meditate deeply for 4 hours a day."
+            },
+            {
+                "name": "Arcane Recovery",
+                "source": "Class",
+                "description": "Once per day during a short rest, you can recover spell slots with a combined level equal to or less than half your wizard level (rounded up).",
+                "uses": {
+                    "maximum": 1,
+                    "current": 1,
+                    "rechargeOn": "Long Rest"
+                }
+            },
+            {
+                "name": "Sculpt Spells",
+                "source": "Class",
+                "description": "When you cast an evocation spell, you can protect a number of creatures equal to 1 + the spell's level from its effects."
+            },
+            {
+                "name": "Potent Cantrip",
+                "source": "Class",
+                "description": "When a creature succeeds on a saving throw against your cantrip, the creature takes half the cantrip's damage but suffers no additional effect."
+            }
+        ],
+        "feats": [],
+        "inventory": {
+            "currency": {
+                "copper": 15,
+                "silver": 30,
+                "electrum": 5,
+                "gold": 287,
+                "platinum": 12
+            },
+            "weapons": [
+                {
+                    "name": "Quarterstaff",
+                    "type": "Simple Melee",
+                    "damage": "1d6",
+                    "damageType": "Bludgeoning",
+                    "properties": [
+                        "Versatile (1d8)"
+                    ],
+                    "attackBonus": 2,
+                    "damageBonus": -1,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "quantity": 1,
+                    "weight": 4,
+                    "description": "A simple wooden staff used as an arcane focus."
+                },
+                {
+                    "name": "Dagger",
+                    "type": "Simple Melee",
+                    "damage": "1d4",
+                    "damageType": "Piercing",
+                    "properties": [
+                        "Finesse",
+                        "Light",
+                        "Thrown (range 20/60)"
+                    ],
+                    "attackBonus": 5,
+                    "damageBonus": 2,
+                    "magical": false,
+                    "magicalBonus": 0,
+                    "equipped": true,
+                    "quantity": 1,
+                    "weight": 1,
+                    "description": "A silver dagger for emergencies."
+                }
+            ],
+            "armor": [],
+            "equipment": [
+                {
+                    "name": "Spellbook",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 3,
+                    "description": "Contains all of Elara's known spells.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Component Pouch",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 2,
+                    "description": "Contains material components for spellcasting.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Scholar's Pack",
+                    "type": "Adventuring Gear",
+                    "quantity": 1,
+                    "weight": 10,
+                    "description": "Backpack with books, parchment, and writing supplies.",
+                    "magical": false,
+                    "attunement": false,
+                    "attuned": false
+                },
+                {
+                    "name": "Robe of Useful Items",
+                    "type": "Magic Item",
+                    "quantity": 1,
+                    "weight": 4,
+                    "description": "A robe with various patches that can be detached and used.",
+                    "magical": true,
+                    "attunement": true,
+                    "attuned": true
+                }
+            ],
+            "carryingCapacity": {
+                "maximum": 120,
+                "current": 24,
+                "encumbered": false,
+                "heavilyEncumbered": false
+            }
+        },
+        "spellcasting": {
+            "spellcastingAbility": "Intelligence",
+            "spellSaveDC": 15,
+            "spellAttackBonus": 7,
+            "spellSlots": {
+                "level1": {
+                    "maximum": 4,
+                    "current": 4
+                },
+                "level2": {
+                    "maximum": 3,
+                    "current": 3
+                },
+                "level3": {
+                    "maximum": 3,
+                    "current": 3
+                },
+                "level4": {
+                    "maximum": 1,
+                    "current": 1
+                },
+                "level5": {
+                    "maximum": 0,
+                    "current": 0
+                },
+                "level6": {
+                    "maximum": 0,
+                    "current": 0
+                },
+                "level7": {
+                    "maximum": 0,
+                    "current": 0
+                },
+                "level8": {
+                    "maximum": 0,
+                    "current": 0
+                },
+                "level9": {
+                    "maximum": 0,
+                    "current": 0
+                }
+            },
+            "cantripsKnown": [
+                {
+                    "name": "Fire Bolt",
+                    "school": "Evocation",
+                    "castingTime": "1 action",
+                    "range": "120 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Instantaneous",
+                    "description": "You hurl a mote of fire at a creature or object. Make a ranged spell attack. On hit, 2d10 fire damage."
+                },
+                {
+                    "name": "Mage Hand",
+                    "school": "Conjuration",
+                    "castingTime": "1 action",
+                    "range": "30 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "1 minute",
+                    "description": "A spectral, floating hand appears at a point you choose within range."
+                },
+                {
+                    "name": "Prestidigitation",
+                    "school": "Transmutation",
+                    "castingTime": "1 action",
+                    "range": "10 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Up to 1 hour",
+                    "description": "You create a minor magical effect."
+                },
+                {
+                    "name": "Ray of Frost",
+                    "school": "Evocation",
+                    "castingTime": "1 action",
+                    "range": "60 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Instantaneous",
+                    "description": "A frigid beam of blue-white light streaks toward a creature. 2d8 cold damage and speed reduced by 10 feet."
+                }
+            ],
+            "spellsKnown": [
+                {
+                    "name": "Shield",
+                    "level": 1,
+                    "school": "Abjuration",
+                    "castingTime": "1 reaction",
+                    "range": "Self",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "1 round",
+                    "concentration": false,
+                    "ritual": false,
+                    "description": "+5 bonus to AC until the start of your next turn."
+                },
+                {
+                    "name": "Magic Missile",
+                    "level": 1,
+                    "school": "Evocation",
+                    "castingTime": "1 action",
+                    "range": "120 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Instantaneous",
+                    "concentration": false,
+                    "ritual": false,
+                    "description": "You create three darts of magical force. Each dart hits automatically and deals 1d4+1 force damage."
+                },
+                {
+                    "name": "Detect Magic",
+                    "level": 1,
+                    "school": "Divination",
+                    "castingTime": "1 action",
+                    "range": "Self",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Concentration, up to 10 minutes",
+                    "concentration": true,
+                    "ritual": true,
+                    "description": "You sense the presence of magic within 30 feet of you."
+                },
+                {
+                    "name": "Fireball",
+                    "level": 3,
+                    "school": "Evocation",
+                    "castingTime": "1 action",
+                    "range": "150 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": true,
+                        "materialComponents": "A tiny ball of bat guano and sulfur"
+                    },
+                    "duration": "Instantaneous",
+                    "concentration": false,
+                    "ritual": false,
+                    "description": "A bright streak flashes from your finger to a point you choose, then blossoms into a fiery explosion. 8d6 fire damage."
+                },
+                {
+                    "name": "Counterspell",
+                    "level": 3,
+                    "school": "Abjuration",
+                    "castingTime": "1 reaction",
+                    "range": "60 feet",
+                    "components": {
+                        "verbal": false,
+                        "somatic": true,
+                        "material": false
+                    },
+                    "duration": "Instantaneous",
+                    "concentration": false,
+                    "ritual": false,
+                    "description": "You attempt to interrupt a creature in the process of casting a spell."
+                },
+                {
+                    "name": "Polymorph",
+                    "level": 4,
+                    "school": "Transmutation",
+                    "castingTime": "1 action",
+                    "range": "60 feet",
+                    "components": {
+                        "verbal": true,
+                        "somatic": true,
+                        "material": true,
+                        "materialComponents": "A caterpillar cocoon"
+                    },
+                    "duration": "Concentration, up to 1 hour",
+                    "concentration": true,
+                    "ritual": false,
+                    "description": "Transform a creature into a beast with CR equal to or less than the target's level."
+                }
+            ],
+            "preparedSpells": [
+                "Shield",
+                "Magic Missile",
+                "Detect Magic",
+                "Fireball",
+                "Counterspell",
+                "Polymorph"
+            ],
+            "spellbook": [
+                "Shield",
+                "Magic Missile",
+                "Detect Magic",
+                "Identify",
+                "Mage Armor",
+                "Sleep",
+                "Misty Step",
+                "Scorching Ray",
+                "Web",
+                "Fireball",
+                "Counterspell",
+                "Lightning Bolt",
+                "Fly",
+                "Polymorph",
+                "Greater Invisibility"
+            ]
+        },
+        "personality": {
+            "personalityTraits": [
+                "I use polysyllabic words to convey the impression of great erudition.",
+                "I'm convinced that people are always trying to steal my secrets."
+            ],
+            "ideals": [
+                "Knowledge: The path to power and self-improvement is through knowledge."
+            ],
+            "bonds": [
+                "I seek to preserve a great library of magical knowledge."
+            ],
+            "flaws": [
+                "I speak without really thinking through my words, often insulting others."
+            ]
+        },
+        "appearance": {
+            "age": 142,
+            "height": "5'8\"",
+            "weight": "125 lbs",
+            "eyes": "Silver",
+            "skin": "Pale",
+            "hair": "Long silver-white",
+            "appearance": "Slender high elf with silver hair and eyes. Often wears flowing blue robes covered in arcane symbols."
+        },
+        "backstory": "Elara spent decades studying in the great libraries of the elven kingdom. Her thirst for magical knowledge led her to adventure, seeking lost spells and ancient tomes.",
+        "allies": [
+            "The Arcane Society",
+            "Keeper Thalion of the Grand Library"
+        ],
+        "treasure": [
+            "Ancient spellbook fragment",
+            "Crystal focusing lens"
+        ],
+        "notes": "Specializes in evocation magic. Seeks rare magical knowledge and artifacts."
+    }
+]
