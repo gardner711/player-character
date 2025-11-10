@@ -10,12 +10,37 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// validateAlignment validates that the alignment is one of the allowed D&D alignments
+func validateAlignment(fl validator.FieldLevel) bool {
+	alignment := fl.Field().String()
+	if alignment == "" {
+		return true // Allow empty alignment
+	}
+
+	validAlignments := []string{
+		"Lawful Good", "Neutral Good", "Chaotic Good",
+		"Lawful Neutral", "True Neutral", "Chaotic Neutral",
+		"Lawful Evil", "Neutral Evil", "Chaotic Evil",
+	}
+
+	for _, valid := range validAlignments {
+		if alignment == valid {
+			return true
+		}
+	}
+	return false
+}
+
 // ValidateCharacter validates a character against business rules and schema
 func ValidateCharacter(character *models.Character) []models.ValidationError {
 	var errors []models.ValidationError
 
 	// Use struct validation
 	validate := validator.New()
+
+	// Register custom alignment validator
+	validate.RegisterValidation("alignment", validateAlignment)
+
 	err := validate.Struct(character)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {

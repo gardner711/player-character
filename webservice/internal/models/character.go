@@ -17,7 +17,7 @@ type Character struct {
 	Level            int               `json:"level" bson:"level" validate:"required,min=1,max=20" swaggo:"required,minimum=1,maximum=20"`
 	ExperiencePoints int               `json:"experiencePoints" bson:"experiencePoints,omitempty" validate:"min=0"`
 	Background       string            `json:"background" bson:"background,omitempty"`
-	Alignment        string            `json:"alignment" bson:"alignment,omitempty" validate:"omitempty,oneof=Lawful Good Neutral Good Chaotic Good Lawful Neutral True Neutral Chaotic Neutral Lawful Evil Neutral Evil Chaotic Evil"`
+	Alignment        string            `json:"alignment" bson:"alignment,omitempty" validate:"omitempty,alignment"`
 	AbilityScores    AbilityScores     `json:"abilityScores" bson:"abilityScores" validate:"required" swaggo:"required"`
 	CreatedAt        time.Time         `json:"createdAt" bson:"createdAt"`
 	UpdatedAt        time.Time         `json:"updatedAt" bson:"updatedAt"`
