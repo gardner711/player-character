@@ -28,9 +28,14 @@ Implement a responsive, tiled character list component that displays all player 
 | FR-980008 | Loading States | Add skeleton loading component and loading state management | Must Have | Ready for Implementation | Approved |
 | FR-980009 | Error Handling | Implement error display and retry functionality for API failures | Must Have | Ready for Implementation | Approved |
 | FR-980010 | Empty State | Create empty state component when no characters exist | Should Have | Ready for Implementation | Approved |
-| FR-980011 | Responsive Grid | Implement CSS Grid layout adapting to mobile/tablet/desktop breakpoints | Must Have | Ready for Implementation | Approved |
-| FR-980012 | Accessibility | Add ARIA labels, keyboard navigation, and screen reader support | Must Have | Ready for Implementation | Approved |
-| FR-980013 | Edit Navigation | Implement character edit link/button with proper routing integration | Must Have | Ready for Implementation | Approved |
+| FR-980011 | Search Bar Component | Implement SearchBar component with debounced input for character name search | Must Have | Ready for Implementation | Approved |
+| FR-980012 | Sort Dropdown Component | Create SortDropdown component with options for name, level, race, class, and date | Must Have | Ready for Implementation | Approved |
+| FR-980013 | Search Hook | Implement useSearch custom hook with debouncing and state management | Must Have | Ready for Implementation | Approved |
+| FR-980014 | Sorting Hook | Implement useSorting custom hook with field and direction state management | Must Have | Ready for Implementation | Approved |
+| FR-980015 | Combined Filtering | Ensure search, sorting, and pagination work together seamlessly | Must Have | Ready for Implementation | Approved |
+| FR-980016 | Responsive Grid | Implement CSS Grid layout adapting to mobile/tablet/desktop breakpoints | Must Have | Ready for Implementation | Approved |
+| FR-980017 | Accessibility | Add ARIA labels, keyboard navigation, and screen reader support | Must Have | Ready for Implementation | Approved |
+| FR-980018 | Edit Navigation | Implement character edit link/button with proper routing integration | Must Have | Ready for Implementation | Approved |
 
 ## Non-Functional Requirements
 
@@ -52,6 +57,10 @@ interface CharacterListProps {
   pageSize?: number;                    // Default: 20
   onCharacterEdit?: (characterId: string) => void;
   className?: string;                   // Additional CSS classes
+  enableSearch?: boolean;               // Default: true
+  enableSorting?: boolean;              // Default: true
+  defaultSortField?: SortField;         // Default: 'created'
+  defaultSortDirection?: SortDirection; // Default: 'desc'
 }
 ```
 
@@ -71,9 +80,23 @@ interface CharacterListState {
 const CharacterList: React.FC<CharacterListProps> = ({
   pageSize = 20,
   onCharacterEdit,
-  className
+  className,
+  enableSearch = true,
+  enableSorting = true,
+  defaultSortField = 'created',
+  defaultSortDirection = 'desc'
 }) => {
-  const { characters, pagination, loading, error, refetch } = useCharacterList(currentPage, pageSize);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearch('');
+  const { sortField, sortDirection, setSorting } = useSorting(defaultSortField, defaultSortDirection);
+
+  const { characters, pagination, loading, error, refetch } = useCharacterList(
+    currentPage,
+    pageSize,
+    debouncedSearchTerm,
+    sortField,
+    sortDirection
+  );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -83,12 +106,60 @@ const CharacterList: React.FC<CharacterListProps> = ({
     onCharacterEdit?.(characterId);
   };
 
+  const handleSortChange = (field: SortField, direction: SortDirection) => {
+    setSorting(field, direction);
+    setCurrentPage(1); // Reset to first page when sorting changes
+  };
+
   if (loading) return <LoadingSkeleton count={pageSize} />;
   if (error) return <ErrorState error={error} onRetry={refetch} />;
-  if (characters.length === 0) return <EmptyState />;
+  if (characters.length === 0 && !searchTerm) return <EmptyState />;
 
   return (
     <div className={`character-list ${className}`}>
+      <div className="character-list-controls">
+        {enableSearch && (
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Search characters by name..."
+          />
+        )}
+        {enableSorting && (
+          <SortDropdown
+            currentField={sortField}
+            currentDirection={sortDirection}
+            onSortChange={handleSortChange}
+          />
+        )}
+      </div>
+
+      {characters.length === 0 && searchTerm ? (
+        <EmptySearchState searchTerm={searchTerm} onClearSearch={() => setSearchTerm('')} />
+      ) : (
+        <>
+          <div className="character-grid">
+            {characters.map(character => (
+              <CharacterTile
+                key={character.id}
+                character={character}
+                onEdit={handleCharacterEdit}
+              />
+            ))}
+          </div>
+          {pagination && (
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={Math.ceil(pagination.total / pageSize)}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+```
       <div className="character-grid">
         {characters.map(character => (
           <CharacterTile
@@ -236,6 +307,133 @@ const Pagination: React.FC<PaginationProps> = ({
 };
 ```
 
+### SearchBar Component
+
+#### Props Interface
+```typescript
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+}
+```
+
+#### Component Implementation
+```typescript
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  onChange,
+  placeholder = "Search characters...",
+  className
+}) => {
+  return (
+    <div className={`search-bar ${className}`}>
+      <div className="search-input-container">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="search-input"
+          aria-label="Search characters"
+        />
+        <button
+          type="button"
+          className="search-icon"
+          aria-label="Search"
+        >
+          🔍
+        </button>
+        {value && (
+          <button
+            type="button"
+            className="clear-search"
+            onClick={() => onChange('')}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+```
+
+### SortDropdown Component
+
+#### Props Interface
+```typescript
+type SortField = 'name' | 'level' | 'race' | 'class' | 'created';
+type SortDirection = 'asc' | 'desc';
+
+interface SortOption {
+  field: SortField;
+  label: string;
+}
+
+interface SortDropdownProps {
+  currentField: SortField;
+  currentDirection: SortDirection;
+  onSortChange: (field: SortField, direction: SortDirection) => void;
+  className?: string;
+}
+```
+
+#### Component Implementation
+```typescript
+const SortDropdown: React.FC<SortDropdownProps> = ({
+  currentField,
+  currentDirection,
+  onSortChange,
+  className
+}) => {
+  const sortOptions: SortOption[] = [
+    { field: 'name', label: 'Name' },
+    { field: 'level', label: 'Level' },
+    { field: 'race', label: 'Race' },
+    { field: 'class', label: 'Class' },
+    { field: 'created', label: 'Date Created' }
+  ];
+
+  const getSortLabel = (field: SortField, direction: SortDirection) => {
+    const option = sortOptions.find(opt => opt.field === field);
+    const directionLabel = direction === 'asc' ? 'A-Z' : 'Z-A';
+    return `${option?.label} (${directionLabel})`;
+  };
+
+  return (
+    <div className={`sort-dropdown ${className}`}>
+      <label htmlFor="sort-select" className="sort-label">
+        Sort by:
+      </label>
+      <select
+        id="sort-select"
+        value={`${currentField}-${currentDirection}`}
+        onChange={(e) => {
+          const [field, direction] = e.target.value.split('-') as [SortField, SortDirection];
+          onSortChange(field, direction);
+        }}
+        className="sort-select"
+        aria-label="Sort characters"
+      >
+        {sortOptions.map(option => (
+          <React.Fragment key={option.field}>
+            <option value={`${option.field}-asc`}>
+              {option.label} (A-Z)
+            </option>
+            <option value={`${option.field}-desc`}>
+              {option.label} (Z-A)
+            </option>
+          </React.Fragment>
+        ))}
+      </select>
+    </div>
+  );
+};
+```
+
 ### useCharacterList Hook
 
 #### Hook Interface
@@ -250,7 +448,10 @@ interface UseCharacterListResult {
 
 const useCharacterList = (
   page: number,
-  limit: number
+  limit: number,
+  searchTerm?: string,
+  sortField?: SortField,
+  sortDirection?: SortDirection
 ): UseCharacterListResult => {
   // Implementation
 };
@@ -258,7 +459,13 @@ const useCharacterList = (
 
 #### Hook Implementation
 ```typescript
-const useCharacterList = (page: number, limit: number) => {
+const useCharacterList = (
+  page: number,
+  limit: number,
+  searchTerm: string = '',
+  sortField: SortField = 'created',
+  sortDirection: SortDirection = 'desc'
+) => {
   const [state, setState] = useState({
     characters: [],
     pagination: null,
@@ -270,6 +477,29 @@ const useCharacterList = (page: number, limit: number) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      const client = new CharacterAPIClient(API_BASE_URL);
+      const result = await client.getCharacters({
+        page,
+        limit,
+        search: searchTerm,
+        sortField,
+        sortDirection
+      });
+
+      setState({
+        characters: result.characters,
+        pagination: result.pagination,
+        loading: false,
+        error: null
+      });
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error.message
+      }));
+    }
+  }, [page, limit, searchTerm, sortField, sortDirection]);
       const client = new CharacterAPIClient(API_BASE_URL);
       const result = await client.getCharacters({ page, limit });
 
@@ -295,6 +525,80 @@ const useCharacterList = (page: number, limit: number) => {
   return {
     ...state,
     refetch: fetchCharacters
+  };
+};
+```
+
+### useSearch Hook
+
+#### Hook Interface
+```typescript
+interface UseSearchResult {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  debouncedSearchTerm: string;
+}
+
+const useSearch = (initialValue: string = '', debounceMs: number = 300): UseSearchResult => {
+  // Implementation
+};
+```
+
+#### Hook Implementation
+```typescript
+const useSearch = (initialValue: string = '', debounceMs: number = 300) => {
+  const [searchTerm, setSearchTerm] = useState(initialValue);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialValue);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, debounceMs);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, debounceMs]);
+
+  return {
+    searchTerm,
+    setSearchTerm,
+    debouncedSearchTerm
+  };
+};
+```
+
+### useSorting Hook
+
+#### Hook Interface
+```typescript
+interface UseSortingResult {
+  sortField: SortField;
+  sortDirection: SortDirection;
+  setSorting: (field: SortField, direction: SortDirection) => void;
+}
+
+const useSorting = (
+  initialField: SortField = 'created',
+  initialDirection: SortDirection = 'desc'
+): UseSortingResult => {
+  // Implementation
+};
+```
+
+#### Hook Implementation
+```typescript
+const useSorting = (initialField: SortField = 'created', initialDirection: SortDirection = 'desc') => {
+  const [sortField, setSortField] = useState<SortField>(initialField);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(initialDirection);
+
+  const setSorting = useCallback((field: SortField, direction: SortDirection) => {
+    setSortField(field);
+    setSortDirection(direction);
+  }, []);
+
+  return {
+    sortField,
+    sortDirection,
+    setSorting
   };
 };
 ```
@@ -328,6 +632,111 @@ const useCharacterList = (page: number, limit: number) => {
 @media (min-width: 769px) and (max-width: 1024px) {
   .character-grid {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+```
+
+### Character List Controls Styling
+```css
+.character-list-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-bar {
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+}
+
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.clear-search {
+  position: absolute;
+  right: 2rem;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1.2rem;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-label {
+  font-weight: 500;
+  color: #4a5568;
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 0.75rem;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  background: white;
+  font-size: 1rem;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .character-list-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar {
+    min-width: auto;
+    max-width: none;
+  }
+
+  .sort-dropdown {
+    justify-content: center;
   }
 }
 ```
@@ -453,6 +862,30 @@ describe('CharacterList', () => {
   it('calls onCharacterEdit when edit button is clicked', () => {
     // Test implementation
   });
+
+  it('renders search bar when enableSearch is true', () => {
+    // Test implementation
+  });
+
+  it('renders sort dropdown when enableSorting is true', () => {
+    // Test implementation
+  });
+
+  it('updates search term when user types', () => {
+    // Test implementation
+  });
+
+  it('calls sort change handler when sort option changes', () => {
+    // Test implementation
+  });
+
+  it('resets to page 1 when search term changes', () => {
+    // Test implementation
+  });
+
+  it('resets to page 1 when sort changes', () => {
+    // Test implementation
+  });
 });
 
 describe('CharacterTile', () => {
@@ -461,6 +894,62 @@ describe('CharacterTile', () => {
   });
 
   it('calls onEdit with correct character ID', () => {
+    // Test implementation
+  });
+});
+
+describe('SearchBar', () => {
+  it('renders input with correct placeholder', () => {
+    // Test implementation
+  });
+
+  it('calls onChange when user types', () => {
+    // Test implementation
+  });
+
+  it('shows clear button when search term exists', () => {
+    // Test implementation
+  });
+
+  it('clears search when clear button is clicked', () => {
+    // Test implementation
+  });
+});
+
+describe('SortDropdown', () => {
+  it('renders all sort options', () => {
+    // Test implementation
+  });
+
+  it('shows current sort field and direction', () => {
+    // Test implementation
+  });
+
+  it('calls onSortChange when selection changes', () => {
+    // Test implementation
+  });
+});
+
+describe('useSearch', () => {
+  it('returns search term and setter', () => {
+    // Test implementation
+  });
+
+  it('debounces search term updates', () => {
+    // Test implementation
+  });
+
+  it('returns debounced value after delay', async () => {
+    // Test implementation
+  });
+});
+
+describe('useSorting', () => {
+  it('returns current sort field and direction', () => {
+    // Test implementation
+  });
+
+  it('updates sort field and direction', () => {
     // Test implementation
   });
 });
