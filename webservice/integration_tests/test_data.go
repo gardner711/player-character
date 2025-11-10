@@ -12,7 +12,6 @@ var TestCharacterData = models.Character{
 	Class:            "Fighter",
 	Level:            3,
 	Background:       "Soldier",
-	Alignment:        "Lawful Good",
 	ExperiencePoints: 2700,
 	AbilityScores: models.AbilityScores{
 		Strength:     models.AbilityScore{Base: 16},
@@ -32,7 +31,6 @@ var UpdatedTestCharacterData = models.Character{
 	Class:            "Fighter",
 	Level:            4,
 	Background:       "Soldier",
-	Alignment:        "Lawful Good",
 	ExperiencePoints: 5500,
 	AbilityScores: models.AbilityScores{
 		Strength:     models.AbilityScore{Base: 17},
