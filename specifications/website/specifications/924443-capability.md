@@ -25,6 +25,7 @@ A single website to support the user interface for the player character operatio
 | ENB-055534 | Navigation |
 | ENB-874140 | Layout |
 | ENB-299518 | Home Page |
+| ENB-980008 | Dark Mode Toggle |
 
 ## Dependencies
 

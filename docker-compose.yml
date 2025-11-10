@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Web Service (Go API)
+  webservice:
+    build:
+      context: ./webservice
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - GIN_MODE=release
+      - LOG_LEVEL=info
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DATABASE=playercharacter
+      - MONGODB_COLLECTION=playercharacters
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8765/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - pc-network
+
+  # Website (React SPA)
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_BASE_URL=http://webservice:8765
+    restart: unless-stopped
+    depends_on:
+      webservice:
+        condition: service_healthy
+    networks:
+      - pc-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=playercharacter
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - pc-network
+
+volumes:
+  mongodb_data:
+
+
+networks:
+  pc-network:
+    driver: bridge

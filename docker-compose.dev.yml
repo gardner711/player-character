@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # Web Service (Go API) - Development
+  webservice:
+    build:
+      context: ./webservice
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./webservice:/app
+    environment:
+      - GIN_MODE=debug
+      - LOG_LEVEL=debug
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DATABASE=playercharacter
+      - MONGODB_COLLECTION=playercharacters
+    restart: no
+    depends_on:
+      - mongodb
+    networks:
+      - pc-network
+    command: [ "go", "run", "./cmd/server" ]
+
+  # Website (React SPA) - Development
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./website:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8765
+    restart: no
+    depends_on:
+      - webservice
+    networks:
+      - pc-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=playercharacter
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - pc-network
+
+volumes:
+  mongodb_data:
+
+
+networks:
+  pc-network:
+    driver: bridge

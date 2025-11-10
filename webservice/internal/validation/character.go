@@ -29,13 +29,13 @@ func ValidateCharacter(character *models.Character) []models.ValidationError {
 			case "required":
 				message = fmt.Sprintf("%s is required", field)
 			case "min":
-				message = fmt.Sprintf("%s must be at least %s", field, err.Param())
+				message = fmt.Sprintf("%s must be at least %s, got %v", field, err.Param(), err.Value())
 			case "max":
-				message = fmt.Sprintf("%s must be at most %s", field, err.Param())
+				message = fmt.Sprintf("%s must be at most %s, got %v", field, err.Param(), err.Value())
 			case "oneof":
-				message = fmt.Sprintf("%s must be one of: %s", field, err.Param())
+				message = fmt.Sprintf("%s must be one of: %s, got %v", field, err.Param(), err.Value())
 			default:
-				message = fmt.Sprintf("%s is invalid", field)
+				message = fmt.Sprintf("%s is invalid (value: %v)", field, err.Value())
 			}
 
 			errors = append(errors, models.ValidationError{
@@ -64,7 +64,7 @@ func validateBusinessRules(character *models.Character) []models.ValidationError
 	if !contains(validRaces, character.Race) {
 		errors = append(errors, models.ValidationError{
 			Field:   "race",
-			Message: "Invalid race. Must be one of: " + strings.Join(validRaces, ", "),
+			Message: fmt.Sprintf("Invalid race '%s'. Must be one of: %s", character.Race, strings.Join(validRaces, ", ")),
 			Code:    "INVALID_RACE",
 		})
 	}
@@ -77,7 +77,7 @@ func validateBusinessRules(character *models.Character) []models.ValidationError
 	if !contains(validClasses, character.Class) {
 		errors = append(errors, models.ValidationError{
 			Field:   "class",
-			Message: "Invalid class. Must be one of: " + strings.Join(validClasses, ", "),
+			Message: fmt.Sprintf("Invalid class '%s'. Must be one of: %s", character.Class, strings.Join(validClasses, ", ")),
 			Code:    "INVALID_CLASS",
 		})
 	}
@@ -88,7 +88,7 @@ func validateBusinessRules(character *models.Character) []models.ValidationError
 		if !contains(validClasses, mc.Class) {
 			errors = append(errors, models.ValidationError{
 				Field:   fmt.Sprintf("multiclass[%d].class", i),
-				Message: "Invalid multiclass. Must be one of: " + strings.Join(validClasses, ", "),
+				Message: fmt.Sprintf("Invalid multiclass class '%s'. Must be one of: %s", mc.Class, strings.Join(validClasses, ", ")),
 				Code:    "INVALID_MULTICLASS",
 			})
 		}
@@ -99,9 +99,29 @@ func validateBusinessRules(character *models.Character) []models.ValidationError
 	if totalLevel > 30 {
 		errors = append(errors, models.ValidationError{
 			Field:   "level",
-			Message: "Total character level exceeds maximum allowed",
+			Message: fmt.Sprintf("Total character level %d exceeds maximum allowed (30)", totalLevel),
 			Code:    "LEVEL_TOO_HIGH",
 		})
+	}
+
+	// Validate ability scores are within valid ranges
+	abilityFields := map[string]int{
+		"abilityScores.strength":     character.AbilityScores.Strength.Base,
+		"abilityScores.dexterity":    character.AbilityScores.Dexterity.Base,
+		"abilityScores.constitution": character.AbilityScores.Constitution.Base,
+		"abilityScores.intelligence": character.AbilityScores.Intelligence.Base,
+		"abilityScores.wisdom":       character.AbilityScores.Wisdom.Base,
+		"abilityScores.charisma":     character.AbilityScores.Charisma.Base,
+	}
+
+	for field, value := range abilityFields {
+		if value < 1 || value > 20 {
+			errors = append(errors, models.ValidationError{
+				Field:   field,
+				Message: fmt.Sprintf("Ability score %s must be between 1 and 20, got %d", strings.TrimPrefix(field, "abilityScores."), value),
+				Code:    "INVALID_ABILITY_SCORE",
+			})
+		}
 	}
 
 	return errors
