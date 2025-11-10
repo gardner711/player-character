@@ -1,7 +1,7 @@
 package integration_tests
 
 import (
-	"player-character/webservice/internal/models"
+	"player-character/internal/models"
 )
 
 // TestCharacterData provides sample character data for integration tests
