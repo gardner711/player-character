@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  webservice:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8766:8765" # Use different port for tests
+    environment:
+      - GIN_MODE=test
+      - LOG_LEVEL=error
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DATABASE=playercharacter_test
+      - MONGODB_COLLECTION=playercharacters
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8765/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - integration-test-network
+
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27018:27017" # Use different port for tests
+    environment:
+      - MONGO_INITDB_DATABASE=playercharacter_test
+    volumes:
+      - mongodb_test_data:/data/db
+    restart: unless-stopped
+    networks:
+      - integration-test-network
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mongodb_test_data:
+
+
+networks:
+  integration-test-network:
+    driver: bridge
