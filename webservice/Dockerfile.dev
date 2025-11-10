@@ -1,0 +1,26 @@
+# Development Dockerfile with hot reload
+FROM golang:1.23-alpine
+
+# Install development dependencies
+RUN apk add --no-cache git ca-certificates tzdata curl
+
+# Install air for hot reloading (optional, but recommended for development)
+RUN go install github.com/cosmtrek/air@latest
+
+# Set working directory
+WORKDIR /app
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 8765
+
+# Default command for development (can be overridden)
+CMD ["go", "run", "./cmd/server"]

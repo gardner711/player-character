@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  webservice:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8765:8765"
+    volumes:
+      - .:/app
+      - /app/server
+    environment:
+      - GIN_MODE=debug
+      - LOG_LEVEL=debug
+    restart: no
+    networks:
+      - webservice-network
+
+networks:
+  webservice-network:
+    driver: bridge
