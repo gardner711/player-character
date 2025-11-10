@@ -10,7 +10,12 @@ services:
     environment:
       - GIN_MODE=release
       - LOG_LEVEL=info
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DATABASE=playercharacter
+      - MONGODB_COLLECTION=playercharacters
     restart: unless-stopped
+    depends_on:
+      - mongodb
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8765/health" ]
       interval: 30s
@@ -19,6 +24,22 @@ services:
       start_period: 40s
     networks:
       - webservice-network
+
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=playercharacter
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - webservice-network
+
+volumes:
+  mongodb_data:
+
 
 networks:
   webservice-network:

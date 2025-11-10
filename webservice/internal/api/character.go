@@ -10,7 +10,6 @@ import (
 	"player-character/pkg/logging"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // CharacterHandler handles character-related HTTP requests
@@ -87,13 +86,12 @@ func (h *CharacterHandler) CreateCharacter(c *gin.Context) {
 // @Router /api/characters/{id} [get]
 func (h *CharacterHandler) GetCharacter(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := uuid.Parse(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character ID"})
+	if idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Character ID is required"})
 		return
 	}
 
-	character, err := h.store.Get(id)
+	character, err := h.store.Get(idStr)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Character not found"})
 		return
@@ -171,9 +169,8 @@ func (h *CharacterHandler) ListCharacters(c *gin.Context) {
 // @Router /api/characters/{id} [put]
 func (h *CharacterHandler) UpdateCharacter(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := uuid.Parse(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character ID"})
+	if idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Character ID is required"})
 		return
 	}
 
@@ -190,7 +187,7 @@ func (h *CharacterHandler) UpdateCharacter(c *gin.Context) {
 	}
 
 	// Update character
-	if err := h.store.Update(id, &character); err != nil {
+	if err := h.store.Update(idStr, &character); err != nil {
 		if err.Error() == "character not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Character not found"})
 		} else {
@@ -215,13 +212,12 @@ func (h *CharacterHandler) UpdateCharacter(c *gin.Context) {
 // @Router /api/characters/{id} [delete]
 func (h *CharacterHandler) DeleteCharacter(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := uuid.Parse(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character ID"})
+	if idStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Character ID is required"})
 		return
 	}
 
-	if err := h.store.Delete(id); err != nil {
+	if err := h.store.Delete(idStr); err != nil {
 		if err.Error() == "character not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Character not found"})
 		} else {

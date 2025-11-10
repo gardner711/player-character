@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -51,6 +52,22 @@ func main() {
 		logFormat = "json"
 	}
 
+	// Get MongoDB connection details from environment variables
+	mongoURI := os.Getenv("MONGODB_URI")
+	if mongoURI == "" {
+		mongoURI = "mongodb://localhost:27017"
+	}
+
+	mongoDatabase := os.Getenv("MONGODB_DATABASE")
+	if mongoDatabase == "" {
+		mongoDatabase = "playercharacter"
+	}
+
+	mongoCollection := os.Getenv("MONGODB_COLLECTION")
+	if mongoCollection == "" {
+		mongoCollection = "playercharacters"
+	}
+
 	// Initialize logger
 	loggerConfig := logging.Config{
 		Level:      logLevel,
@@ -64,7 +81,11 @@ func main() {
 	logger := logging.NewLogger(loggerConfig)
 
 	// Initialize database
-	store := database.NewMemoryStore()
+	store, err := database.NewMongoStore(mongoURI, mongoDatabase, mongoCollection)
+	if err != nil {
+		log.Fatal("Failed to connect to MongoDB:", err)
+	}
+	defer store.Disconnect(context.Background())
 
 	// Initialize handlers
 	characterHandler := api.NewCharacterHandler(store, logger)

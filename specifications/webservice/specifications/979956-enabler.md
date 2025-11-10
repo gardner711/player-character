@@ -15,7 +15,7 @@
 
 ## Technical Overview
 ### Purpose
-Implement the core CRUD operations for player characters through RESTful API endpoints, providing create, read, update, and delete functionality with proper HTTP semantics.
+Implement the core CRUD operations for player characters through RESTful API endpoints, providing create, read, update, and delete functionality with proper HTTP semantics. The GET operations leverage MongoDB object storage for persistent data retrieval from the `playercharacters` collection.
 
 ## Functional Requirements
 
@@ -114,6 +114,8 @@ Implement the core CRUD operations for player characters through RESTful API end
 - Implement proper error handling and logging
 - Consider rate limiting for production deployment
 - Support both JSON and potentially other content types if needed
-- Implement efficient database pagination (e.g., OFFSET/LIMIT or cursor-based)
+- Implement efficient MongoDB pagination using skip/limit with sorting
 - Validate pagination parameters (page >= 1, 1 <= limit <= 100)
 - Return consistent pagination metadata in all list responses
+- Use MongoDB connection pooling for optimal performance
+- Configure MongoDB connection via environment variables (MONGODB_URI, MONGODB_DATABASE, MONGODB_COLLECTION)

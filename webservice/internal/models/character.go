@@ -2,49 +2,47 @@ package models
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // Character represents a D&D 5e player character
 type Character struct {
-	ID               uuid.UUID         `json:"id" swaggo:"unique"`
-	CharacterName    string            `json:"characterName" validate:"required" swaggo:"required"`
-	PlayerName       string            `json:"playerName,omitempty"`
-	Race             string            `json:"race" validate:"required" swaggo:"required"`
-	Subrace          string            `json:"subrace,omitempty"`
-	Class            string            `json:"class" validate:"required" swaggo:"required"`
-	Subclass         string            `json:"subclass,omitempty"`
-	Multiclass       []MulticlassEntry `json:"multiclass,omitempty"`
-	Level            int               `json:"level" validate:"required,min=1,max=20" swaggo:"required,minimum=1,maximum=20"`
-	ExperiencePoints int               `json:"experiencePoints,omitempty" validate:"min=0"`
-	Background       string            `json:"background,omitempty"`
-	Alignment        string            `json:"alignment,omitempty" validate:"omitempty,oneof=Lawful Good Neutral Good Chaotic Good Lawful Neutral True Neutral Chaotic Neutral Lawful Evil Neutral Evil Chaotic Evil"`
-	AbilityScores    AbilityScores     `json:"abilityScores" validate:"required" swaggo:"required"`
-	CreatedAt        time.Time         `json:"createdAt"`
-	UpdatedAt        time.Time         `json:"updatedAt"`
+	ID               string            `json:"id" bson:"id" swaggo:"unique"`
+	CharacterName    string            `json:"characterName" bson:"characterName" validate:"required" swaggo:"required"`
+	PlayerName       string            `json:"playerName" bson:"playerName,omitempty"`
+	Race             string            `json:"race" bson:"race" validate:"required" swaggo:"required"`
+	Subrace          string            `json:"subrace" bson:"subrace,omitempty"`
+	Class            string            `json:"class" bson:"class" validate:"required" swaggo:"required"`
+	Subclass         string            `json:"subclass" bson:"subclass,omitempty"`
+	Multiclass       []MulticlassEntry `json:"multiclass" bson:"multiclass,omitempty"`
+	Level            int               `json:"level" bson:"level" validate:"required,min=1,max=20" swaggo:"required,minimum=1,maximum=20"`
+	ExperiencePoints int               `json:"experiencePoints" bson:"experiencePoints,omitempty" validate:"min=0"`
+	Background       string            `json:"background" bson:"background,omitempty"`
+	Alignment        string            `json:"alignment" bson:"alignment,omitempty" validate:"omitempty,oneof=Lawful Good Neutral Good Chaotic Good Lawful Neutral True Neutral Chaotic Neutral Lawful Evil Neutral Evil Chaotic Evil"`
+	AbilityScores    AbilityScores     `json:"abilityScores" bson:"abilityScores" validate:"required" swaggo:"required"`
+	CreatedAt        time.Time         `json:"createdAt" bson:"createdAt"`
+	UpdatedAt        time.Time         `json:"updatedAt" bson:"updatedAt"`
 }
 
 // MulticlassEntry represents a multiclass entry
 type MulticlassEntry struct {
-	Class    string `json:"class" validate:"required"`
-	Subclass string `json:"subclass,omitempty"`
-	Level    int    `json:"level" validate:"required,min=1,max=20"`
+	Class    string `json:"class" bson:"class" validate:"required"`
+	Subclass string `json:"subclass" bson:"subclass,omitempty"`
+	Level    int    `json:"level" bson:"level" validate:"required,min=1,max=20"`
 }
 
 // AbilityScores represents the six ability scores
 type AbilityScores struct {
-	Strength     AbilityScore `json:"strength" validate:"required"`
-	Dexterity    AbilityScore `json:"dexterity" validate:"required"`
-	Constitution AbilityScore `json:"constitution" validate:"required"`
-	Intelligence AbilityScore `json:"intelligence" validate:"required"`
-	Wisdom       AbilityScore `json:"wisdom" validate:"required"`
-	Charisma     AbilityScore `json:"charisma" validate:"required"`
+	Strength     AbilityScore `json:"strength" bson:"strength" validate:"required"`
+	Dexterity    AbilityScore `json:"dexterity" bson:"dexterity" validate:"required"`
+	Constitution AbilityScore `json:"constitution" bson:"constitution" validate:"required"`
+	Intelligence AbilityScore `json:"intelligence" bson:"intelligence" validate:"required"`
+	Wisdom       AbilityScore `json:"wisdom" bson:"wisdom" validate:"required"`
+	Charisma     AbilityScore `json:"charisma" bson:"charisma" validate:"required"`
 }
 
 // AbilityScore represents a single ability score with base value
 type AbilityScore struct {
-	Base int `json:"base" validate:"min=1,max=20"`
+	Base int `json:"base" bson:"base" validate:"min=1,max=20"`
 }
 
 // PaginationResponse represents a paginated response

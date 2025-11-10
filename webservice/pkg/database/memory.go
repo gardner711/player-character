@@ -29,13 +29,12 @@ func (s *MemoryStore) Create(character *models.Character) error {
 	defer s.mutex.Unlock()
 
 	// Generate ID if not provided
-	if character.ID == uuid.Nil {
-		character.ID = uuid.New()
+	if character.ID == "" {
+		character.ID = uuid.New().String()
 	}
 
 	// Check if ID already exists
-	idStr := character.ID.String()
-	if _, exists := s.characters[idStr]; exists {
+	if _, exists := s.characters[character.ID]; exists {
 		return errors.New("character with this ID already exists")
 	}
 
@@ -44,16 +43,16 @@ func (s *MemoryStore) Create(character *models.Character) error {
 	character.CreatedAt = now
 	character.UpdatedAt = now
 
-	s.characters[idStr] = *character
+	s.characters[character.ID] = *character
 	return nil
 }
 
 // Get retrieves a character by ID
-func (s *MemoryStore) Get(id uuid.UUID) (*models.Character, error) {
+func (s *MemoryStore) Get(id string) (*models.Character, error) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
-	character, exists := s.characters[id.String()]
+	character, exists := s.characters[id]
 	if !exists {
 		return nil, errors.New("character not found")
 	}
@@ -89,12 +88,11 @@ func (s *MemoryStore) List(page, limit int) ([]models.Character, int, error) {
 }
 
 // Update modifies an existing character
-func (s *MemoryStore) Update(id uuid.UUID, character *models.Character) error {
+func (s *MemoryStore) Update(id string, character *models.Character) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	idStr := id.String()
-	existing, exists := s.characters[idStr]
+	existing, exists := s.characters[id]
 	if !exists {
 		return errors.New("character not found")
 	}
@@ -104,29 +102,28 @@ func (s *MemoryStore) Update(id uuid.UUID, character *models.Character) error {
 	character.CreatedAt = existing.CreatedAt
 	character.UpdatedAt = time.Now()
 
-	s.characters[idStr] = *character
+	s.characters[id] = *character
 	return nil
 }
 
 // Delete removes a character
-func (s *MemoryStore) Delete(id uuid.UUID) error {
+func (s *MemoryStore) Delete(id string) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	idStr := id.String()
-	if _, exists := s.characters[idStr]; !exists {
+	if _, exists := s.characters[id]; !exists {
 		return errors.New("character not found")
 	}
 
-	delete(s.characters, idStr)
+	delete(s.characters, id)
 	return nil
 }
 
 // CharacterStore interface defines the contract for character storage
 type CharacterStore interface {
 	Create(character *models.Character) error
-	Get(id uuid.UUID) (*models.Character, error)
+	Get(id string) (*models.Character, error)
 	List(page, limit int) ([]models.Character, int, error)
-	Update(id uuid.UUID, character *models.Character) error
-	Delete(id uuid.UUID) error
+	Update(id string, character *models.Character) error
+	Delete(id string) error
 }
