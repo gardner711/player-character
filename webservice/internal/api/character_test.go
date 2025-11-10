@@ -78,8 +78,8 @@ func TestCreateCharacter_Success(t *testing.T) {
 	if response.Class != character.Class {
 		t.Errorf("Expected class %s, got %s", character.Class, response.Class)
 	}
-	if response.ID == uuid.Nil {
-		t.Error("Expected non-nil ID")
+	if response.ID == "" {
+		t.Error("Expected non-empty ID")
 	}
 }
 
@@ -177,7 +177,7 @@ func TestGetCharacter_Success(t *testing.T) {
 	}
 
 	// Now retrieve it
-	req, _ := http.NewRequest("GET", "/api/characters/"+character.ID.String(), nil)
+	req, _ := http.NewRequest("GET", "/api/characters/"+character.ID, nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -361,7 +361,7 @@ func TestUpdateCharacter_Success(t *testing.T) {
 	updatedCharacter.Level = 2
 
 	jsonData, _ := json.Marshal(updatedCharacter)
-	req, _ := http.NewRequest("PUT", "/api/characters/"+character.ID.String(), bytes.NewBuffer(jsonData))
+	req, _ := http.NewRequest("PUT", "/api/characters/"+character.ID, bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -429,7 +429,7 @@ func TestDeleteCharacter_Success(t *testing.T) {
 	}
 
 	// Delete the character
-	req, _ := http.NewRequest("DELETE", "/api/characters/"+character.ID.String(), nil)
+	req, _ := http.NewRequest("DELETE", "/api/characters/"+character.ID, nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -438,7 +438,7 @@ func TestDeleteCharacter_Success(t *testing.T) {
 	}
 
 	// Verify it's deleted
-	req2, _ := http.NewRequest("GET", "/api/characters/"+character.ID.String(), nil)
+	req2, _ := http.NewRequest("GET", "/api/characters/"+character.ID, nil)
 	w2 := httptest.NewRecorder()
 	router.ServeHTTP(w2, req2)
 	if w2.Code != http.StatusNotFound {
@@ -468,8 +468,8 @@ func TestDeleteCharacter_NotFound(t *testing.T) {
 		}
 	}
 
-	nonExistentID := uuid.New()
-	req, _ := http.NewRequest("DELETE", "/api/characters/"+nonExistentID.String(), nil)
+	nonExistentID := "non-existent-id"
+	req, _ := http.NewRequest("DELETE", "/api/characters/"+nonExistentID, nil)
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

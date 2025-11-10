@@ -15,7 +15,7 @@
 
 ## Technical Overview
 ### Purpose
-Implement the core CRUD operations for player characters through RESTful API endpoints, providing create, read, update, and delete functionality with proper HTTP semantics. The GET operations leverage MongoDB object storage for persistent data retrieval from the `playercharacters` collection.
+Implement the core CRUD operations for player characters through RESTful API endpoints, providing create, read, update, and delete functionality with proper HTTP semantics. All operations leverage MongoDB object storage for persistent data management in the `playercharacters` collection.
 
 ## Functional Requirements
 
@@ -110,7 +110,8 @@ Implement the core CRUD operations for player characters through RESTful API end
 
 ### Implementation Notes
 
-- Use UUID or similar for character IDs
+- Use string-based IDs for MongoDB compatibility and simpler querying
+- All CRUD operations (Create, Read, Update, Delete) leverage MongoDB object storage
 - Implement proper error handling and logging
 - Consider rate limiting for production deployment
 - Support both JSON and potentially other content types if needed
