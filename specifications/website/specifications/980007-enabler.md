@@ -27,7 +27,7 @@ Implement a comprehensive character editing wizard that mirrors the character cr
 | FR-980030 | Edit Ability Scores | Adjust ability scores within point buy constraints | Must Have | Ready for Implementation | Approved |
 | FR-980031 | Edit Background | Update background, alignment, level, and experience points | Must Have | Ready for Implementation | Approved |
 | FR-980032 | Change Tracking | Track modified fields and show change summary | Must Have | Ready for Implementation | Approved |
-| FR-980033 | Validation Consistency | Apply identical validation rules as character creation | Must Have | Ready for Implementation | Approved |
+| FR-980032 | Validation Consistency | Apply identical validation rules as character creation with automatic validation-based progression | Must Have | Ready for Implementation | Approved |
 | FR-980034 | Edit Confirmation | Require confirmation for significant changes before saving | Should Have | Ready for Implementation | Approved |
 | FR-980035 | Cancel Protection | Warn about unsaved changes when canceling edit | Should Have | Ready for Implementation | Approved |
 | FR-980036 | Concurrent Edit Handling | Handle conflicts when character is edited by multiple users | Should Have | Ready for Implementation | Approved |
@@ -72,7 +72,7 @@ const CharacterEditWizard: React.FC<CharacterEditWizardProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [originalCharacter, setOriginalCharacter] = useState<Character | null>(null);
   const [editedCharacter, setEditedCharacter] = useState<Partial<CharacterEditData>>({});
-  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [stepValidities, setStepValidities] = useState<Record<number, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [modifiedFields, setModifiedFields] = useState<Set<string>>(new Set());
 
@@ -102,18 +102,21 @@ const CharacterEditWizard: React.FC<CharacterEditWizardProps> = ({
 
   const currentStepData = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
-  const canProceed = completedSteps.has(currentStep);
+  const canProceed = stepValidities[currentStep] || false;
   const hasChanges = modifiedFields.size > 0;
 
-  const handleStepComplete = (stepData: Partial<CharacterEditData>) => {
+  const handleStepDataChange = (stepData: Partial<CharacterEditData>) => {
     setEditedCharacter(prev => ({ ...prev, ...stepData }));
-    setCompletedSteps(prev => new Set([...prev, currentStep]));
 
     // Track changes
     if (enableChangeTracking && originalCharacter) {
       const changes = getModifiedFields(originalCharacter, { ...editedCharacter, ...stepData });
       setModifiedFields(changes);
     }
+  };
+
+  const handleStepValidityChange = (stepIndex: number, isValid: boolean) => {
+    setStepValidities(prev => ({ ...prev, [stepIndex]: isValid }));
   };
 
   const handleNext = () => {
@@ -185,7 +188,8 @@ const CharacterEditWizard: React.FC<CharacterEditWizardProps> = ({
         <CurrentStepComponent
           originalData={originalCharacter}
           editedData={editedCharacter}
-          onComplete={handleStepComplete}
+          onDataChange={handleStepDataChange}
+          onValidityChange={(isValid) => handleStepValidityChange(currentStep, isValid)}
           validationSchema={currentStepData.validationSchema}
         />
       </div>

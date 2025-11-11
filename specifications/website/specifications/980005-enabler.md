@@ -26,7 +26,7 @@ Implement a comprehensive 4-step character creation wizard with real-time valida
 | FR-980008 | Class Selection Step | Implement Step 2: Primary class, subclass, and multiclass options | Must Have | Ready for Implementation | Approved |
 | FR-980009 | Ability Scores Step | Implement Step 3: Ability score assignment with point buy system | Must Have | Ready for Implementation | Approved |
 | FR-980010 | Background Step | Implement Step 4: Background, alignment, level, and experience points | Must Have | Ready for Implementation | Approved |
-| FR-980011 | Step Navigation | Create navigation controls with validation-based progression | Must Have | Ready for Implementation | Approved |
+| FR-980011 | Step Navigation | Implement automatic validation-based progression where Next button appears when step forms are valid, eliminating intermediary "Continue to..." buttons | Must Have | Ready for Implementation | Approved |
 | FR-980012 | Progress Indicator | Implement visual progress bar showing wizard completion status | Must Have | Ready for Implementation | Approved |
 | FR-980013 | Form Validation | Implement Zod schema validation with real-time feedback | Must Have | Ready for Implementation | Approved |
 | FR-980014 | Error Display | Create user-friendly error messages for validation failures | Must Have | Ready for Implementation | Approved |
@@ -73,7 +73,7 @@ const CharacterCreationWizard: React.FC<CharacterCreationWizardProps> = ({
   const [characterData, setCharacterData] = useState<Partial<CharacterCreationData>>(
     initialData || {}
   );
-  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [stepValidities, setStepValidities] = useState<Record<number, boolean>>({});
 
   const steps = [
     { component: BasicInfoStep, title: 'Basic Information', validationSchema: basicInfoSchema },
@@ -84,11 +84,14 @@ const CharacterCreationWizard: React.FC<CharacterCreationWizardProps> = ({
 
   const currentStepData = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
-  const canProceed = completedSteps.has(currentStep);
+  const canProceed = stepValidities[currentStep] || false;
 
-  const handleStepComplete = (stepData: Partial<CharacterCreationData>) => {
+  const handleStepDataChange = (stepData: Partial<CharacterCreationData>) => {
     setCharacterData(prev => ({ ...prev, ...stepData }));
-    setCompletedSteps(prev => new Set([...prev, currentStep]));
+  };
+
+  const handleStepValidityChange = (stepIndex: number, isValid: boolean) => {
+    setStepValidities(prev => ({ ...prev, [stepIndex]: isValid }));
   };
 
   const handleNext = () => {
@@ -128,7 +131,8 @@ const CharacterCreationWizard: React.FC<CharacterCreationWizardProps> = ({
       <div className="wizard-content">
         <CurrentStepComponent
           data={characterData}
-          onComplete={handleStepComplete}
+          onDataChange={handleStepDataChange}
+          onValidityChange={(isValid) => handleStepValidityChange(currentStep, isValid)}
           validationSchema={currentStepData.validationSchema}
         />
       </div>
@@ -152,16 +156,18 @@ const CharacterCreationWizard: React.FC<CharacterCreationWizardProps> = ({
 ```typescript
 interface BasicInfoStepProps {
   data: Partial<CharacterCreationData>;
-  onComplete: (data: Partial<CharacterCreationData>) => void;
+  onDataChange: (data: Partial<CharacterCreationData>) => void;
+  onValidityChange: (isValid: boolean) => void;
   validationSchema: z.ZodSchema;
 }
 
 const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   data,
-  onComplete,
+  onDataChange,
+  onValidityChange,
   validationSchema
 }) => {
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
+  const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: {
       characterName: data.characterName || '',
@@ -170,6 +176,17 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
       subrace: data.subrace || ''
     }
   });
+
+  // Watch form values and update parent component
+  const watchedValues = watch();
+  useEffect(() => {
+    onDataChange(watchedValues);
+  }, [watchedValues, onDataChange]);
+
+  // Report validity changes to parent
+  useEffect(() => {
+    onValidityChange(isValid);
+  }, [isValid, onValidityChange]);
 
   const races = [
     'Human', 'Elf', 'Dwarf', 'Halfling', 'Dragonborn',
@@ -186,17 +203,13 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
     return subraceMap[race] || [];
   };
 
-  const onSubmit = (formData: any) => {
-    onComplete(formData);
-  };
-
   return (
     <WizardStep
       title="Basic Information"
       description="Let's start with the fundamentals of your character"
       isValid={isValid}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="basic-info-form">
+      <form className="basic-info-form">
         <div className="form-group">
           <label htmlFor="characterName">Character Name *</label>
           <input
@@ -231,21 +244,17 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           )}
         </div>
 
-        {getSubraces(data.race || '').length > 0 && (
+        {getSubraces(watchedValues.race || '').length > 0 && (
           <div className="form-group">
             <label htmlFor="subrace">Subrace</label>
             <select id="subrace" {...register('subrace')}>
               <option value="">Select a subrace (optional)</option>
-              {getSubraces(data.race || '').map(subrace => (
+              {getSubraces(watchedValues.race || '').map(subrace => (
                 <option key={subrace} value={subrace}>{subrace}</option>
               ))}
             </select>
           </div>
         )}
-
-        <button type="submit" disabled={!isValid} className="step-submit-btn">
-          Continue to Class Selection
-        </button>
       </form>
     </WizardStep>
   );
