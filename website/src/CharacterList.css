@@ -137,7 +137,8 @@
 
 /* Dark mode styles for character tiles */
 .dark .character-tile {
-    background: var(--bg-secondary);
+    background: #1f2937;
+    /* gray-800 */
     border-color: var(--border-color);
     box-shadow: 0 1px 3px var(--shadow-color);
 }
@@ -326,7 +327,8 @@
 
 /* Dark mode styles for skeleton tiles */
 .dark .skeleton-tile {
-    background: var(--bg-secondary);
+    background: #1f2937;
+    /* gray-800 */
     border-color: var(--border-color);
     box-shadow: 0 1px 3px var(--shadow-color);
 }
