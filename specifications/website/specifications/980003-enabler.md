@@ -29,7 +29,7 @@ Implement a responsive, tiled character list component that displays all player 
 | FR-980009 | Error Handling | Implement error display and retry functionality for API failures | Must Have | Ready for Implementation | Approved |
 | FR-980010 | Empty State | Create empty state component when no characters exist | Should Have | Ready for Implementation | Approved |
 | FR-980011 | Search Bar Component | Implement SearchBar component with debounced input for character name search | Must Have | Ready for Implementation | Approved |
-| FR-980012 | Sort Dropdown Component | Create SortDropdown component with options for name, level, race, class, and date | Must Have | Ready for Implementation | Approved |
+| FR-980012 | Sort Toggle Buttons Component | Create SortToggleButtons component with individual buttons for name, level, race, class, and date sorting with visual direction indicators | Must Have | Ready for Implementation | Approved |
 | FR-980013 | Search Hook | Implement useSearch custom hook with debouncing and state management | Must Have | Ready for Implementation | Approved |
 | FR-980014 | Sorting Hook | Implement useSorting custom hook with field and direction state management | Must Have | Ready for Implementation | Approved |
 | FR-980015 | Combined Filtering | Ensure search, sorting, and pagination work together seamlessly | Must Have | Ready for Implementation | Approved |

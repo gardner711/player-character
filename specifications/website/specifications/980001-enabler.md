@@ -64,8 +64,8 @@ Implement a comprehensive TypeScript client library that provides a clean, type-
 - **Method**: `getCharacters(params?: ListParams): Promise<CharacterList>`
 - **HTTP Method**: GET
 - **Endpoint**: `/api/characters`
-- **Query Parameters**: page, limit
-- **Response**: Paginated list of characters
+- **Query Parameters**: page, limit, sortBy, sortOrder
+- **Response**: Paginated list of characters with sorting applied
 - **Error Handling**: Server errors
 
 ### Update Character

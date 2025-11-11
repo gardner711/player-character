@@ -29,6 +29,7 @@ Implement comprehensive integration tests that validate the end-to-end functiona
 | FR-979964 | Data Consistency Validation | Validate that data stored in MongoDB matches API responses with proper BSON serialization | Must Have | Completed | Approved |
 | FR-979965 | Error Scenario Integration Tests | Test error handling for invalid requests, non-existent resources, and database errors | Must Have | Completed | Approved |
 | FR-979966 | Pagination Integration Test | Test GET /api/characters pagination with MongoDB query validation | Must Have | Completed | Approved |
+| FR-979967 | Sorting Integration Test | Test GET /api/characters sorting by characterName, level, race, class, and createdAt fields with MongoDB query validation | Must Have | Completed | Approved |
 
 ## Non-Functional Requirements
 

@@ -24,6 +24,7 @@ Implement the core CRUD operations for player characters through RESTful API end
 | FR-979958 | Create Character | Implement POST /api/characters endpoint to create new characters with auto-generated IDs | Must Have | Implemented | Approved |
 | FR-979959 | List Characters | Implement GET /api/characters endpoint to retrieve paginated list of all characters | Must Have | Implemented | Approved |
 | FR-979965 | Pagination Support | Support page and limit query parameters for paginated results with default page=1, limit=20, max limit=100 | Must Have | Implemented | Approved |
+| FR-979966 | Sorting Support | Support sortBy and sortOrder query parameters for sorting results by characterName, level, race, class, or createdAt fields | Must Have | Implemented | Approved |
 | FR-979960 | Get Character | Implement GET /api/characters/{id} endpoint to retrieve a specific character by ID | Must Have | Implemented | Approved |
 | FR-979961 | Update Character | Implement PUT /api/characters/{id} endpoint to update existing characters | Must Have | Implemented | Approved |
 | FR-979962 | Delete Character | Implement DELETE /api/characters/{id} endpoint to remove characters | Must Have | Implemented | Approved |
