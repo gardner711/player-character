@@ -33,6 +33,8 @@ Implement a comprehensive 4-step character creation wizard with real-time valida
 | FR-980015 | API Submission | Implement final character creation via CharacterAPIClient | Must Have | Ready for Implementation | Approved |
 | FR-980016 | Draft Saving | Add optional draft saving functionality for incomplete characters | Should Have | Ready for Implementation | Approved |
 | FR-980017 | Form Recovery | Implement form state recovery for accidental navigation | Should Have | Ready for Implementation | Approved |
+| FR-980018 | Dark Mode Section Backgrounds | Implement dark backgrounds for wizard sections in dark mode instead of white backgrounds | Must Have | Ready for Implementation | Approved |
+| FR-980019 | Dark Mode Header Styling | Implement lighter header text colors in dark mode for better readability and contrast | Must Have | Ready for Implementation | Approved |
 
 ## Non-Functional Requirements
 

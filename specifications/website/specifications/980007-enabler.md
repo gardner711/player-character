@@ -31,6 +31,8 @@ Implement a comprehensive character editing wizard that mirrors the character cr
 | FR-980034 | Edit Confirmation | Require confirmation for significant changes before saving | Should Have | Ready for Implementation | Approved |
 | FR-980035 | Cancel Protection | Warn about unsaved changes when canceling edit | Should Have | Ready for Implementation | Approved |
 | FR-980036 | Concurrent Edit Handling | Handle conflicts when character is edited by multiple users | Should Have | Ready for Implementation | Approved |
+| FR-980037 | Dark Mode Section Backgrounds | Implement dark backgrounds for wizard sections in dark mode instead of white backgrounds | Must Have | Ready for Implementation | Approved |
+| FR-980038 | Dark Mode Header Styling | Implement lighter header text colors in dark mode for better readability and contrast | Must Have | Ready for Implementation | Approved |
 
 ## Non-Functional Requirements
 

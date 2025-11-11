@@ -2,6 +2,8 @@ package database
 
 import (
 	"errors"
+	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -61,7 +63,7 @@ func (s *MemoryStore) Get(id string) (*models.Character, error) {
 }
 
 // List retrieves characters with pagination
-func (s *MemoryStore) List(page, limit int) ([]models.Character, int, error) {
+func (s *MemoryStore) List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
@@ -70,6 +72,31 @@ func (s *MemoryStore) List(page, limit int) ([]models.Character, int, error) {
 	for _, char := range s.characters {
 		allCharacters = append(allCharacters, char)
 	}
+
+	// Sort characters
+	sort.Slice(allCharacters, func(i, j int) bool {
+		var less bool
+		switch sortBy {
+		case "characterName":
+			less = strings.ToLower(allCharacters[i].CharacterName) < strings.ToLower(allCharacters[j].CharacterName)
+		case "level":
+			less = allCharacters[i].Level < allCharacters[j].Level
+		case "race":
+			less = strings.ToLower(allCharacters[i].Race) < strings.ToLower(allCharacters[j].Race)
+		case "class":
+			less = strings.ToLower(allCharacters[i].Class) < strings.ToLower(allCharacters[j].Class)
+		case "createdAt":
+			less = allCharacters[i].CreatedAt.Before(allCharacters[j].CreatedAt)
+		default:
+			// Default sort by createdAt
+			less = allCharacters[i].CreatedAt.Before(allCharacters[j].CreatedAt)
+		}
+
+		if sortOrder == "desc" {
+			return !less
+		}
+		return less
+	})
 
 	total := len(allCharacters)
 
@@ -123,7 +150,7 @@ func (s *MemoryStore) Delete(id string) error {
 type CharacterStore interface {
 	Create(character *models.Character) error
 	Get(id string) (*models.Character, error)
-	List(page, limit int) ([]models.Character, int, error)
+	List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error)
 	Update(id string, character *models.Character) error
 	Delete(id string) error
 }

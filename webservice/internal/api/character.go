@@ -71,7 +71,11 @@ func (h *CharacterHandler) CreateCharacter(c *gin.Context) {
 		"character_name", character.CharacterName,
 		"character_class", character.Class)
 
-	c.JSON(http.StatusCreated, character)
+	c.JSON(http.StatusCreated, gin.H{
+		"data":    character,
+		"message": "Character created successfully",
+		"success": true,
+	})
 }
 
 // GetCharacter handles GET /api/characters/{id}
@@ -97,17 +101,23 @@ func (h *CharacterHandler) GetCharacter(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	c.JSON(http.StatusOK, gin.H{
+		"data":    character,
+		"message": "Character retrieved successfully",
+		"success": true,
+	})
 }
 
 // ListCharacters handles GET /api/characters
 // @Summary List characters
-// @Description Retrieve a paginated list of characters
+// @Description Get a paginated list of characters with optional sorting
 // @Tags characters
 // @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param limit query int false "Items per page" default(20)
-// @Success 200 {object} models.PaginationResponse
+// @Param page query int false "Page number (default: 1)" minimum(1)
+// @Param limit query int false "Items per page (default: 20, max: 100)" minimum(1) maximum(100)
+// @Param sortBy query string false "Sort field (characterName, level, race, class, createdAt)" enum(characterName,level,race,class,createdAt)
+// @Param sortOrder query string false "Sort order (asc, desc)" enum(asc,desc)
+// @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/characters [get]
@@ -128,7 +138,30 @@ func (h *CharacterHandler) ListCharacters(c *gin.Context) {
 		return
 	}
 
-	characters, total, err := h.store.List(page, limit)
+	// Parse sorting parameters
+	sortBy := c.DefaultQuery("sortBy", "createdAt")
+	sortOrder := c.DefaultQuery("sortOrder", "desc")
+
+	// Validate sortBy parameter
+	validSortFields := map[string]bool{
+		"characterName": true,
+		"level":         true,
+		"race":          true,
+		"class":         true,
+		"createdAt":     true,
+	}
+	if !validSortFields[sortBy] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sortBy parameter"})
+		return
+	}
+
+	// Validate sortOrder parameter
+	if sortOrder != "asc" && sortOrder != "desc" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sortOrder parameter (must be 'asc' or 'desc')"})
+		return
+	}
+
+	characters, total, err := h.store.List(page, limit, sortBy, sortOrder)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve characters"})
 		return
@@ -136,25 +169,15 @@ func (h *CharacterHandler) ListCharacters(c *gin.Context) {
 
 	// Calculate pagination metadata
 	totalPages := (total + limit - 1) / limit // Ceiling division
-	hasNext := page < totalPages
-	hasPrev := page > 1
 
-	response := models.PaginationResponse{
-		Data: characters,
-		Pagination: models.Pagination{
-			Page:       page,
-			Limit:      limit,
-			Total:      total,
-			TotalPages: totalPages,
-			HasNext:    hasNext,
-			HasPrev:    hasPrev,
-		},
-	}
-
-	c.JSON(http.StatusOK, response)
-}
-
-// UpdateCharacter handles PUT /api/characters/{id}
+	c.JSON(http.StatusOK, gin.H{
+		"data":       characters,
+		"total":      total,
+		"page":       page,
+		"limit":      limit,
+		"totalPages": totalPages,
+	})
+} // UpdateCharacter handles PUT /api/characters/{id}
 // @Summary Update a character
 // @Description Update an existing character by ID
 // @Tags characters
@@ -196,7 +219,11 @@ func (h *CharacterHandler) UpdateCharacter(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	c.JSON(http.StatusOK, gin.H{
+		"data":    character,
+		"message": "Character updated successfully",
+		"success": true,
+	})
 }
 
 // DeleteCharacter handles DELETE /api/characters/{id}

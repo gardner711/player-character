@@ -88,8 +88,8 @@ func (s *MongoStore) Get(id string) (*models.Character, error) {
 	return &character, nil
 }
 
-// List retrieves characters with pagination
-func (s *MongoStore) List(page, limit int) ([]models.Character, int, error) {
+// List retrieves characters with pagination and sorting
+func (s *MongoStore) List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -102,11 +102,29 @@ func (s *MongoStore) List(page, limit int) ([]models.Character, int, error) {
 	// Calculate skip
 	skip := (page - 1) * limit
 
-	// Find documents with pagination
+	// Build sort document
+	sortDoc := bson.M{}
+	switch sortBy {
+	case "characterName":
+		sortDoc["character_name"] = getSortValue(sortOrder)
+	case "level":
+		sortDoc["level"] = getSortValue(sortOrder)
+	case "race":
+		sortDoc["race"] = getSortValue(sortOrder)
+	case "class":
+		sortDoc["class"] = getSortValue(sortOrder)
+	case "createdAt":
+		sortDoc["created_at"] = getSortValue(sortOrder)
+	default:
+		// Default sort by created_at descending
+		sortDoc["created_at"] = -1
+	}
+
+	// Find documents with pagination and sorting
 	opts := options.Find().
 		SetSkip(int64(skip)).
 		SetLimit(int64(limit)).
-		SetSort(bson.M{"created_at": -1}) // Sort by creation date, newest first
+		SetSort(sortDoc)
 
 	cursor, err := s.collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
@@ -125,6 +143,14 @@ func (s *MongoStore) List(page, limit int) ([]models.Character, int, error) {
 	}
 
 	return characters, int(total), nil
+}
+
+// getSortValue converts sort order string to MongoDB sort value
+func getSortValue(sortOrder string) int {
+	if sortOrder == "desc" {
+		return -1
+	}
+	return 1
 }
 
 // Update modifies an existing character
