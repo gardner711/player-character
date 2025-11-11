@@ -8,7 +8,7 @@
 - **Approval**: Approved
 - **Capability ID**: CAP-980006
 - **Owner**: Development Team
-- **Status**: Ready for Implementation
+- **Status**: Partially Implemented
 - **Priority**: High
 - **Analysis Review**: Not Required
 - **Code Review**: Not Required
@@ -21,18 +21,18 @@ Implement a comprehensive character editing wizard that mirrors the character cr
 
 | ID | Name | Requirement | Priority | Status | Approval |
 |----|------|-------------|----------|--------|----------|
-| FR-980027 | Character Loading | Load and pre-populate wizard with existing character data | Must Have | Ready for Implementation | Approved |
-| FR-980028 | Edit Basic Info | Modify character name, player name, race, and subrace with validation | Must Have | Ready for Implementation | Approved |
-| FR-980029 | Edit Class | Change primary class, subclass, and multiclass options | Must Have | Ready for Implementation | Approved |
-| FR-980030 | Edit Ability Scores | Adjust ability scores within point buy constraints | Must Have | Ready for Implementation | Approved |
-| FR-980031 | Edit Background | Update background, alignment, level, and experience points | Must Have | Ready for Implementation | Approved |
-| FR-980032 | Change Tracking | Track modified fields and show change summary | Must Have | Ready for Implementation | Approved |
-| FR-980032 | Validation Consistency | Apply identical validation rules as character creation with automatic validation-based progression | Must Have | Ready for Implementation | Approved |
-| FR-980034 | Edit Confirmation | Require confirmation for significant changes before saving | Should Have | Ready for Implementation | Approved |
-| FR-980035 | Cancel Protection | Warn about unsaved changes when canceling edit | Should Have | Ready for Implementation | Approved |
-| FR-980036 | Concurrent Edit Handling | Handle conflicts when character is edited by multiple users | Should Have | Ready for Implementation | Approved |
-| FR-980037 | Dark Mode Section Backgrounds | Implement dark backgrounds for wizard sections in dark mode instead of white backgrounds | Must Have | Ready for Implementation | Approved |
-| FR-980038 | Dark Mode Header Styling | Implement lighter header text colors in dark mode for better readability and contrast | Must Have | Ready for Implementation | Approved |
+| FR-980027 | Character Loading | Load and pre-populate wizard with existing character data | Must Have | Implemented | Approved |
+| FR-980028 | Edit Basic Info | Modify character name, player name, race, and subrace with validation | Must Have | Implemented | Approved |
+| FR-980029 | Edit Class | Change primary class, subclass, and multiclass options | Must Have | Implemented | Approved |
+| FR-980030 | Edit Ability Scores | Adjust ability scores within point buy constraints | Must Have | Implemented | Approved |
+| FR-980031 | Edit Background | Update background, alignment, level, and experience points | Must Have | Implemented | Approved |
+| FR-980032 | Change Tracking | Track modified fields and show change summary | Must Have | Partially Implemented | Approved |
+| FR-980032 | Validation Consistency | Apply identical validation rules as character creation with automatic validation-based progression | Must Have | Implemented | Approved |
+| FR-980034 | Edit Confirmation | Require confirmation for significant changes before saving | Should Have | Implemented | Approved |
+| FR-980035 | Cancel Protection | Warn about unsaved changes when canceling edit | Should Have | Implemented | Approved |
+| FR-980036 | Concurrent Edit Handling | Handle conflicts when character is edited by multiple users | Should Have | Implemented | Approved |
+| FR-980037 | Dark Mode Section Backgrounds | Implement dark backgrounds for wizard sections in dark mode instead of white backgrounds | Must Have | Implemented | Approved |
+| FR-980038 | Dark Mode Header Styling | Implement lighter header text colors in dark mode for better readability and contrast | Must Have | Implemented | Approved |
 
 ## Non-Functional Requirements
 

@@ -8,9 +8,11 @@ import {
     ApiError
 } from '../types/character';
 import { API_BASE_URL } from '../config/config';
+import { logger } from '../utils/logger';
 
 export class CharacterAPIClient {
     private client: AxiosInstance;
+    private requestTimings: Map<string, number> = new Map();
 
     constructor(baseURL: string = API_BASE_URL) {
         this.client = axios.create({
@@ -21,13 +23,64 @@ export class CharacterAPIClient {
             },
         });
 
-        // Add response interceptor for error handling
-        this.client.interceptors.response.use(
-            (response) => response,
+        logger.info('CharacterAPI client initialized', { baseURL });
+
+        // Add request interceptor for logging
+        this.client.interceptors.request.use(
+            (config) => {
+                const startTime = Date.now();
+                const requestId = `${config.method}-${config.url}-${startTime}`;
+                this.requestTimings.set(requestId, startTime);
+                (config as any).requestId = requestId;
+                logger.logApiRequest(config.method?.toUpperCase() || 'GET', config.url || '', {
+                    baseURL: config.baseURL,
+                    timeout: config.timeout
+                });
+                return config;
+            },
             (error) => {
-                // Log validation errors to console as per ENB-980001
+                logger.error('API Request failed', error, { url: error.config?.url });
+                return Promise.reject(error);
+            }
+        );
+
+        // Add response interceptor for error handling and logging
+        this.client.interceptors.response.use(
+            (response) => {
+                const requestId = (response.config as any).requestId;
+                const startTime = requestId ? this.requestTimings.get(requestId) : undefined;
+                const duration = startTime ? Date.now() - startTime : undefined;
+                if (requestId) this.requestTimings.delete(requestId);
+                logger.logApiResponse(
+                    response.config.method?.toUpperCase() || 'GET',
+                    response.config.url || '',
+                    response.status,
+                    duration,
+                    { baseURL: response.config.baseURL }
+                );
+                return response;
+            },
+            (error) => {
+                const requestId = (error.config as any)?.requestId;
+                const startTime = requestId ? this.requestTimings.get(requestId) : undefined;
+                const duration = startTime ? Date.now() - startTime : undefined;
+                if (requestId) this.requestTimings.delete(requestId);
+
+                // Log validation errors as per ENB-980001
                 if (error.response?.status === 400 && error.response?.data?.errors) {
-                    console.log('Validation errors:', error.response.data.errors);
+                    logger.warn('API validation errors', {
+                        errors: error.response.data.errors,
+                        url: error.config?.url,
+                        method: error.config?.method?.toUpperCase(),
+                        duration
+                    });
+                } else {
+                    logger.error('API request failed', error, {
+                        url: error.config?.url,
+                        method: error.config?.method?.toUpperCase(),
+                        status: error.response?.status,
+                        duration
+                    });
                 }
 
                 const apiError: ApiError = {
@@ -43,11 +96,14 @@ export class CharacterAPIClient {
     // Get all characters with optional filtering, sorting, and pagination
     async getCharacters(params?: CharacterListParams): Promise<PaginatedResponse<Character>> {
         try {
+            logger.debug('Fetching characters', { params });
             const response: AxiosResponse<PaginatedResponse<Character>> = await this.client.get('/api/characters', {
                 params
             });
+            logger.debug('Characters fetched successfully', { count: response.data.data?.length });
             return response.data;
         } catch (error) {
+            logger.error('Failed to fetch characters', error as Error, { params });
             throw error;
         }
     }
@@ -55,9 +111,12 @@ export class CharacterAPIClient {
     // Get a single character by ID
     async getCharacter(id: string): Promise<Character> {
         try {
+            logger.debug('Fetching character', { characterId: id });
             const response: AxiosResponse<ApiResponse<Character>> = await this.client.get(`/api/characters/${id}`);
+            logger.debug('Character fetched successfully', { characterId: id, characterName: response.data.data?.characterName });
             return response.data.data;
         } catch (error) {
+            logger.error('Failed to fetch character', error as Error, { characterId: id });
             throw error;
         }
     }
@@ -65,8 +124,11 @@ export class CharacterAPIClient {
     // Create a new character
     async createCharacter(characterData: CharacterCreationData): Promise<Character> {
         try {
+            logger.debug('Creating character', { characterName: characterData.characterName, race: characterData.race, class: characterData.class });
+
             // Validate that required data is present
             if (!characterData.characterName || !characterData.race || !characterData.class || !characterData.abilityScores) {
+                logger.error('Missing required character data', new Error('Validation failed'), { characterData });
                 throw new Error('Missing required character data');
             }
 
@@ -75,6 +137,7 @@ export class CharacterAPIClient {
             for (const ability of abilities) {
                 const score = characterData.abilityScores[ability as keyof typeof characterData.abilityScores];
                 if (!score || score < 1 || score > 20) {
+                    logger.error(`Invalid ${ability} score`, new Error('Validation failed'), { ability, score });
                     throw new Error(`Invalid ${ability} score: ${score}`);
                 }
             }
@@ -83,8 +146,10 @@ export class CharacterAPIClient {
             const transformedData = this.transformCreationData(characterData);
 
             const response: AxiosResponse<ApiResponse<Character>> = await this.client.post('/api/characters', transformedData);
+            logger.info('Character created successfully', { characterId: response.data.data?.id, characterName: response.data.data?.characterName });
             return response.data.data;
         } catch (error) {
+            logger.error('Failed to create character', error as Error, { characterName: characterData?.characterName });
             throw error;
         }
     }
@@ -92,12 +157,16 @@ export class CharacterAPIClient {
     // Update an existing character
     async updateCharacter(id: string, characterData: Partial<CharacterCreationData>): Promise<Character> {
         try {
+            logger.debug('Updating character', { characterId: id, updates: Object.keys(characterData) });
+
             // Transform the update data to match the API schema
             const transformedData = this.transformUpdateData(characterData);
 
             const response: AxiosResponse<ApiResponse<Character>> = await this.client.put(`/api/characters/${id}`, transformedData);
+            logger.info('Character updated successfully', { characterId: id, characterName: response.data.data?.characterName });
             return response.data.data;
         } catch (error) {
+            logger.error('Failed to update character', error as Error, { characterId: id });
             throw error;
         }
     }
@@ -105,8 +174,11 @@ export class CharacterAPIClient {
     // Delete a character
     async deleteCharacter(id: string): Promise<void> {
         try {
+            logger.debug('Deleting character', { characterId: id });
             await this.client.delete(`/api/characters/${id}`);
+            logger.info('Character deleted successfully', { characterId: id });
         } catch (error) {
+            logger.error('Failed to delete character', error as Error, { characterId: id });
             throw error;
         }
     }
@@ -114,9 +186,12 @@ export class CharacterAPIClient {
     // Health check endpoint
     async healthCheck(): Promise<{ status: string }> {
         try {
+            logger.debug('Performing health check');
             const response: AxiosResponse<{ status: string }> = await this.client.get('/health');
+            logger.debug('Health check completed', { status: response.data.status });
             return response.data;
         } catch (error) {
+            logger.error('Health check failed', error as Error);
             throw error;
         }
     }

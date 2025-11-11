@@ -10,6 +10,7 @@ import { BackgroundStep } from './wizard/BackgroundStep';
 import { ProgressIndicator } from './wizard/ProgressIndicator';
 import { StepNavigation } from './wizard/StepNavigation';
 import { JsonPreviewPanel } from './wizard/JsonPreviewPanel';
+import { logger } from '../utils/logger';
 import './wizard/wizard.css';
 
 interface CharacterCreateProps {
@@ -76,7 +77,9 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
         });
 
         if (missingFields.length > 0) {
-            setApiError(`Missing required fields: ${missingFields.join(', ')}`);
+            const errorMessage = `Missing required fields: ${missingFields.join(', ')}`;
+            logger.warn('Character creation validation failed', { missingFields, characterData });
+            setApiError(errorMessage);
             return;
         }
 
@@ -84,17 +87,21 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
         setApiError(null);
 
         try {
+            logger.info('Creating character', { characterName: characterData.characterName, race: characterData.race, class: characterData.class });
             const createdCharacter = await characterAPI.createCharacter(characterData as CharacterCreationData);
+            logger.info('Character creation successful', { characterId: createdCharacter.id, characterName: createdCharacter.characterName });
             navigate('/', { state: { successMessage: `Character "${createdCharacter.characterName}" created successfully!` } });
         } catch (error) {
-            setApiError(error instanceof Error ? error.message : 'Failed to create character');
+            const errorMessage = error instanceof Error ? error.message : 'Failed to create character';
+            logger.error('Character creation failed', error as Error, { characterData, errorMessage });
+            setApiError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const handleCancel = () => {
-        navigate('/characters');
+        navigate('/');
     };
 
     const CurrentStepComponent = currentStepData.component;

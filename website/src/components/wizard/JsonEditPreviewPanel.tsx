@@ -82,7 +82,7 @@ export const JsonEditPreviewPanel: React.FC<JsonEditPreviewPanelProps> = ({
             const currentJsonString = JSON.stringify(currentApiFormat, null, 2);
 
             // Basic syntax highlighting for JSON
-            const highlightJson = (jsonString: string, isModified: boolean = false) => {
+            const highlightJson = (jsonString: string, isModified = false) => {
                 return jsonString
                     .replace(/"([^"]+)":/g, `<span class="json-key">"$1"</span>:`) // Keys
                     .replace(/: "([^"]+)"/g, `: <span class="json-string">${isModified ? '<span class="json-modified">' : ''}"$1"${isModified ? '</span>' : ''}</span>`) // Strings

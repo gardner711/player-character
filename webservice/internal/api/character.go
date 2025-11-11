@@ -110,13 +110,14 @@ func (h *CharacterHandler) GetCharacter(c *gin.Context) {
 
 // ListCharacters handles GET /api/characters
 // @Summary List characters
-// @Description Get a paginated list of characters with optional sorting
+// @Description Get a paginated list of characters with optional sorting and search
 // @Tags characters
 // @Produce json
 // @Param page query int false "Page number (default: 1)" minimum(1)
 // @Param limit query int false "Items per page (default: 20, max: 100)" minimum(1) maximum(100)
 // @Param sortBy query string false "Sort field (characterName, level, race, class, createdAt)" enum(characterName,level,race,class,createdAt)
 // @Param sortOrder query string false "Sort order (asc, desc)" enum(asc,desc)
+// @Param search query string false "Search term to filter characters by name, race, or class"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
@@ -161,7 +162,10 @@ func (h *CharacterHandler) ListCharacters(c *gin.Context) {
 		return
 	}
 
-	characters, total, err := h.store.List(page, limit, sortBy, sortOrder)
+	// Parse search parameter
+	search := c.DefaultQuery("search", "")
+
+	characters, total, err := h.store.List(page, limit, sortBy, sortOrder, search)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve characters"})
 		return
@@ -169,13 +173,17 @@ func (h *CharacterHandler) ListCharacters(c *gin.Context) {
 
 	// Calculate pagination metadata
 	totalPages := (total + limit - 1) / limit // Ceiling division
+	hasNext := page < totalPages
 
 	c.JSON(http.StatusOK, gin.H{
-		"data":       characters,
-		"total":      total,
-		"page":       page,
-		"limit":      limit,
-		"totalPages": totalPages,
+		"data": characters,
+		"pagination": gin.H{
+			"page":       page,
+			"limit":      limit,
+			"total":      total,
+			"totalPages": totalPages,
+			"hasNext":    hasNext,
+		},
 	})
 } // UpdateCharacter handles PUT /api/characters/{id}
 // @Summary Update a character

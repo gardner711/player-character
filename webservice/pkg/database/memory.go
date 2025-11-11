@@ -62,8 +62,8 @@ func (s *MemoryStore) Get(id string) (*models.Character, error) {
 	return &character, nil
 }
 
-// List retrieves characters with pagination
-func (s *MemoryStore) List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error) {
+// List retrieves characters with pagination and search
+func (s *MemoryStore) List(page, limit int, sortBy, sortOrder, search string) ([]models.Character, int, error) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
@@ -71,6 +71,20 @@ func (s *MemoryStore) List(page, limit int, sortBy, sortOrder string) ([]models.
 	var allCharacters []models.Character
 	for _, char := range s.characters {
 		allCharacters = append(allCharacters, char)
+	}
+
+	// Filter by search term if provided
+	if search != "" {
+		searchLower := strings.ToLower(search)
+		var filtered []models.Character
+		for _, char := range allCharacters {
+			if strings.Contains(strings.ToLower(char.CharacterName), searchLower) ||
+				strings.Contains(strings.ToLower(char.Race), searchLower) ||
+				strings.Contains(strings.ToLower(char.Class), searchLower) {
+				filtered = append(filtered, char)
+			}
+		}
+		allCharacters = filtered
 	}
 
 	// Sort characters
@@ -150,7 +164,7 @@ func (s *MemoryStore) Delete(id string) error {
 type CharacterStore interface {
 	Create(character *models.Character) error
 	Get(id string) (*models.Character, error)
-	List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error)
+	List(page, limit int, sortBy, sortOrder, search string) ([]models.Character, int, error)
 	Update(id string, character *models.Character) error
 	Delete(id string) error
 }

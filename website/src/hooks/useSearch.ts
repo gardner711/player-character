@@ -6,7 +6,7 @@ export interface UseSearchResult {
     debouncedSearchTerm: string;
 }
 
-export const useSearch = (initialValue: string = '', debounceMs: number = 300): UseSearchResult => {
+export const useSearch = (initialValue = '', debounceMs = 300): UseSearchResult => {
     const [searchTerm, setSearchTerm] = useState(initialValue);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialValue);
 

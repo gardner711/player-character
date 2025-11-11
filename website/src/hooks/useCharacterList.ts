@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { characterAPI } from '../services/characterAPI';
 import { Character, CharacterListParams } from '../types/character';
+import { logger } from '../utils/logger';
 
 export type SortField = 'characterName' | 'level' | 'race' | 'class' | 'createdAt';
 export type SortDirection = 'asc' | 'desc';
@@ -23,7 +24,7 @@ export interface UseCharacterListResult {
 export const useCharacterList = (
     page: number,
     limit: number,
-    searchTerm: string = '',
+    searchTerm = '',
     sortField: SortField = 'createdAt',
     sortDirection: SortDirection = 'desc'
 ): UseCharacterListResult => {
@@ -46,6 +47,7 @@ export const useCharacterList = (
                 sortOrder: sortDirection
             };
 
+            logger.debug('Fetching character list', { page, limit, searchTerm, sortField, sortDirection });
             const result = await characterAPI.getCharacters(params);
 
             setState({
@@ -59,11 +61,21 @@ export const useCharacterList = (
                 loading: false,
                 error: null
             });
+            logger.debug('Character list fetched successfully', { count: result.data.length, total: result.total });
         } catch (error: any) {
+            const errorMessage = error.message || 'Failed to load characters';
+            logger.error('Failed to fetch character list', error, {
+                page,
+                limit,
+                searchTerm,
+                sortField,
+                sortDirection,
+                errorMessage
+            });
             setState(prev => ({
                 ...prev,
                 loading: false,
-                error: error.message || 'Failed to load characters'
+                error: errorMessage
             }));
         }
     }, [page, limit, searchTerm, sortField, sortDirection]);

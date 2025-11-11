@@ -88,13 +88,27 @@ func (s *MongoStore) Get(id string) (*models.Character, error) {
 	return &character, nil
 }
 
-// List retrieves characters with pagination and sorting
-func (s *MongoStore) List(page, limit int, sortBy, sortOrder string) ([]models.Character, int, error) {
+// List retrieves characters with pagination, sorting, and search
+func (s *MongoStore) List(page, limit int, sortBy, sortOrder, search string) ([]models.Character, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Get total count
-	total, err := s.collection.CountDocuments(ctx, bson.M{})
+	// Build filter for search
+	filter := bson.M{}
+	if search != "" {
+		// Case-insensitive regex search on characterName, race, and class
+		regexPattern := bson.M{"$regex": search, "$options": "i"}
+		filter = bson.M{
+			"$or": []bson.M{
+				{"characterName": regexPattern},
+				{"race": regexPattern},
+				{"class": regexPattern},
+			},
+		}
+	}
+
+	// Get total count with filter
+	total, err := s.collection.CountDocuments(ctx, filter)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -126,7 +140,7 @@ func (s *MongoStore) List(page, limit int, sortBy, sortOrder string) ([]models.C
 		SetLimit(int64(limit)).
 		SetSort(sortDoc)
 
-	cursor, err := s.collection.Find(ctx, bson.M{}, opts)
+	cursor, err := s.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, 0, err
 	}

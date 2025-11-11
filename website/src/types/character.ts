@@ -86,7 +86,7 @@ export interface CharacterCreationData {
     };
 }
 
-export interface CharacterEditData extends Partial<CharacterCreationData> { }
+export type CharacterEditData = Partial<CharacterCreationData>;
 
 // API Error types
 export interface ApiError {

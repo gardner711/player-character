@@ -205,6 +205,8 @@
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+    position: relative;
+    min-height: 180px;
 }
 
 /* Dark mode styles for character tiles */
@@ -275,8 +277,9 @@
 }
 
 .character-actions {
-    display: flex;
-    justify-content: flex-end;
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
 }
 
 .edit-button {
@@ -577,10 +580,16 @@
 @media (max-width: 480px) {
     .character-tile {
         padding: 1rem;
+        min-height: 160px;
     }
 
     .character-name {
         font-size: 1.125rem;
+    }
+
+    .character-actions {
+        position: static;
+        margin-top: 1rem;
     }
 
     .edit-button {

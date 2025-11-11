@@ -10,6 +10,7 @@ import { BackgroundStep } from './wizard/BackgroundStep';
 import { ProgressIndicator } from './wizard/ProgressIndicator';
 import { StepNavigation } from './wizard/StepNavigation';
 import { JsonEditPreviewPanel } from './wizard/JsonEditPreviewPanel';
+import { logger } from '../utils/logger';
 
 const CharacterEdit: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -37,6 +38,7 @@ const CharacterEdit: React.FC = () => {
             if (!id) return;
 
             try {
+                logger.debug('Loading character for editing', { characterId: id });
                 const character = await characterAPI.getCharacter(id);
                 setOriginalCharacter(character);
                 // Convert Character to CharacterCreationData format
@@ -61,9 +63,12 @@ const CharacterEdit: React.FC = () => {
                         charisma: character.abilityScores.charisma.score
                     }
                 });
+                logger.debug('Character loaded for editing', { characterId: id, characterName: character.characterName });
                 setIsLoading(false);
             } catch (error) {
-                setApiError(error instanceof Error ? error.message : 'Failed to load character');
+                const errorMessage = error instanceof Error ? error.message : 'Failed to load character';
+                logger.error('Failed to load character for editing', error as Error, { characterId: id, errorMessage });
+                setApiError(errorMessage);
                 setIsLoading(false);
             }
         };
@@ -137,13 +142,19 @@ const CharacterEdit: React.FC = () => {
         setApiError(null);
 
         try {
+            logger.info('Updating character', { characterId: id, modifiedFields: Array.from(modifiedFields) });
             const updatedCharacter = await characterAPI.updateCharacter(id, characterData);
+            logger.info('Character update successful', { characterId: id, characterName: updatedCharacter.characterName });
             navigate('/', { state: { successMessage: `Character "${updatedCharacter.characterName}" updated successfully!` } });
         } catch (error) {
             if (error instanceof Error && 'status' in error && error.status === 409) {
-                setApiError('Character was modified by another user. Please refresh and try again.');
+                const errorMessage = 'Character was modified by another user. Please refresh and try again.';
+                logger.warn('Character update conflict', { characterId: id, error: error.message });
+                setApiError(errorMessage);
             } else {
-                setApiError(error instanceof Error ? error.message : 'Failed to update character');
+                const errorMessage = error instanceof Error ? error.message : 'Failed to update character';
+                logger.error('Character update failed', error as Error, { characterId: id, errorMessage });
+                setApiError(errorMessage);
             }
         } finally {
             setIsSubmitting(false);
@@ -155,7 +166,7 @@ const CharacterEdit: React.FC = () => {
             const confirmed = window.confirm('You have unsaved changes. Are you sure you want to cancel?');
             if (!confirmed) return;
         }
-        navigate('/characters');
+        navigate('/');
     };
 
     const CurrentStepComponent = currentStepData.component;
@@ -214,24 +225,6 @@ const CharacterEdit: React.FC = () => {
                         validationSchema={currentStepData.validationSchema}
                     />
                 </div>
-
-                {hasChanges && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <div className="ml-3">
-                                <h3 className="text-sm font-medium text-blue-800">Unsaved Changes</h3>
-                                <div className="mt-2 text-sm text-blue-700">
-                                    You have modified {modifiedFields.size} field(s). Don't forget to save your changes.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {apiError && (
                     <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">

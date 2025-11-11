@@ -63,22 +63,26 @@ func TestCreateCharacter_Success(t *testing.T) {
 		t.Errorf("Expected status %d, got %d", http.StatusCreated, w.Code)
 	}
 
-	var response models.Character
+	var response struct {
+		Data    models.Character `json:"data"`
+		Message string           `json:"message"`
+		Success bool             `json:"success"`
+	}
 	err := json.Unmarshal(w.Body.Bytes(), &response)
 	if err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
 
-	if response.CharacterName != character.CharacterName {
-		t.Errorf("Expected character name %s, got %s", character.CharacterName, response.CharacterName)
+	if response.Data.CharacterName != character.CharacterName {
+		t.Errorf("Expected character name %s, got %s", character.CharacterName, response.Data.CharacterName)
 	}
-	if response.Race != character.Race {
-		t.Errorf("Expected race %s, got %s", character.Race, response.Race)
+	if response.Data.Race != character.Race {
+		t.Errorf("Expected race %s, got %s", character.Race, response.Data.Race)
 	}
-	if response.Class != character.Class {
-		t.Errorf("Expected class %s, got %s", character.Class, response.Class)
+	if response.Data.Class != character.Class {
+		t.Errorf("Expected class %s, got %s", character.Class, response.Data.Class)
 	}
-	if response.ID == "" {
+	if response.Data.ID == "" {
 		t.Error("Expected non-empty ID")
 	}
 }
@@ -185,16 +189,20 @@ func TestGetCharacter_Success(t *testing.T) {
 		t.Errorf("Expected status %d, got %d", http.StatusOK, w.Code)
 	}
 
-	var response models.Character
+	var response struct {
+		Data    models.Character `json:"data"`
+		Message string           `json:"message"`
+		Success bool             `json:"success"`
+	}
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	if err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
-	if response.ID != character.ID {
-		t.Errorf("Expected ID %s, got %s", character.ID, response.ID)
+	if response.Data.ID != character.ID {
+		t.Errorf("Expected ID %s, got %s", character.ID, response.Data.ID)
 	}
-	if response.CharacterName != character.CharacterName {
-		t.Errorf("Expected character name %s, got %s", character.CharacterName, response.CharacterName)
+	if response.Data.CharacterName != character.CharacterName {
+		t.Errorf("Expected character name %s, got %s", character.CharacterName, response.Data.CharacterName)
 	}
 }
 
@@ -371,16 +379,20 @@ func TestUpdateCharacter_Success(t *testing.T) {
 		t.Errorf("Expected status %d, got %d", http.StatusOK, w.Code)
 	}
 
-	var response models.Character
+	var response struct {
+		Data    models.Character `json:"data"`
+		Message string           `json:"message"`
+		Success bool             `json:"success"`
+	}
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	if err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
-	if response.CharacterName != "Updated Name" {
-		t.Errorf("Expected updated name 'Updated Name', got %s", response.CharacterName)
+	if response.Data.CharacterName != "Updated Name" {
+		t.Errorf("Expected updated name 'Updated Name', got %s", response.Data.CharacterName)
 	}
-	if response.Level != 2 {
-		t.Errorf("Expected updated level 2, got %d", response.Level)
+	if response.Data.Level != 2 {
+		t.Errorf("Expected updated level 2, got %d", response.Data.Level)
 	}
 }
 
