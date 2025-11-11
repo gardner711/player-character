@@ -106,7 +106,7 @@ func (s *MongoStore) List(page, limit int, sortBy, sortOrder string) ([]models.C
 	sortDoc := bson.M{}
 	switch sortBy {
 	case "characterName":
-		sortDoc["character_name"] = getSortValue(sortOrder)
+		sortDoc["characterName"] = getSortValue(sortOrder)
 	case "level":
 		sortDoc["level"] = getSortValue(sortOrder)
 	case "race":
@@ -114,10 +114,10 @@ func (s *MongoStore) List(page, limit int, sortBy, sortOrder string) ([]models.C
 	case "class":
 		sortDoc["class"] = getSortValue(sortOrder)
 	case "createdAt":
-		sortDoc["created_at"] = getSortValue(sortOrder)
+		sortDoc["createdAt"] = getSortValue(sortOrder)
 	default:
-		// Default sort by created_at descending
-		sortDoc["created_at"] = -1
+		// Default sort by createdAt descending
+		sortDoc["createdAt"] = -1
 	}
 
 	// Find documents with pagination and sorting
