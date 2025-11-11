@@ -90,6 +90,11 @@
     color: #374151;
 }
 
+/* Dark mode styles for sort label */
+.dark .sort-label {
+    color: var(--text-primary);
+}
+
 .sort-select {
     padding: 0.5rem 0.75rem;
     border: 1px solid #d1d5db;
@@ -97,6 +102,13 @@
     font-size: 0.875rem;
     background-color: white;
     cursor: pointer;
+}
+
+/* Dark mode styles for sort select */
+.dark .sort-select {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
 }
 
 .sort-select:focus {
@@ -123,6 +135,13 @@
     transition: box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
 }
 
+/* Dark mode styles for character tiles */
+.dark .character-tile {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
+}
+
 .character-tile:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
@@ -137,6 +156,11 @@
     font-weight: 600;
     color: #111827;
     margin: 0 0 0.5rem 0;
+}
+
+/* Dark mode styles for character name */
+.dark .character-name {
+    color: var(--text-primary);
 }
 
 .character-details {
@@ -156,11 +180,25 @@
     border-radius: 0.25rem;
 }
 
+/* Dark mode styles for character details */
+.dark .character-race,
+.dark .character-class,
+.dark .character-level {
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+}
+
 .character-background,
 .character-player {
     font-size: 0.875rem;
     color: #6b7280;
     margin: 0.25rem 0;
+}
+
+/* Dark mode styles for character background and player */
+.dark .character-background,
+.dark .character-player {
+    color: var(--text-secondary);
 }
 
 .character-actions {
@@ -207,6 +245,18 @@
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.15s ease-in-out;
+}
+
+/* Dark mode styles for pagination buttons */
+.dark .pagination-button {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.dark .pagination-button:hover:not(:disabled) {
+    background-color: var(--bg-tertiary);
+    border-color: #6b7280;
 }
 
 .pagination-button:hover:not(:disabled) {
@@ -274,6 +324,13 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Dark mode styles for skeleton tiles */
+.dark .skeleton-tile {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
+}
+
 .skeleton-name {
     height: 1.5rem;
     width: 70%;
@@ -335,6 +392,15 @@
     margin-bottom: 1.5rem;
 }
 
+/* Dark mode styles for error state */
+.dark .error-title {
+    color: var(--text-primary);
+}
+
+.dark .error-message {
+    color: var(--text-secondary);
+}
+
 .retry-button {
     background-color: #3b82f6;
     color: white;
@@ -375,6 +441,15 @@
 .empty-message {
     color: #6b7280;
     margin-bottom: 1.5rem;
+}
+
+/* Dark mode styles for empty state */
+.dark .empty-title {
+    color: var(--text-primary);
+}
+
+.dark .empty-message {
+    color: var(--text-secondary);
 }
 
 .create-first-button,

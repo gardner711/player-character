@@ -96,12 +96,12 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
 
     return (
         <div className="ability-scores-step">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Ability Scores</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Ability Scores</h2>
 
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
                 <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-blue-800">Point Buy Total:</span>
-                    <span className={`text-lg font-bold ${pointTotal > 27 ? 'text-red-600' : 'text-blue-600'}`}>
+                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Point Buy Total:</span>
+                    <span className={`text-lg font-bold ${pointTotal > 27 ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'}`}>
                         {pointTotal} / 27 points
                     </span>
                 </div>
@@ -120,10 +120,10 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
                         const cost = getPointCost(score);
 
                         return (
-                            <div key={ability.key} className="ability-score-card p-4 border border-gray-200 rounded-md">
+                            <div key={ability.key} className="ability-score-card p-4 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800">
                                 <div className="text-center mb-3">
-                                    <h3 className="text-sm font-medium text-gray-700">{ability.label}</h3>
-                                    <span className="text-xs text-gray-500">{ability.abbr}</span>
+                                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{ability.label}</h3>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">{ability.abbr}</span>
                                 </div>
 
                                 <div className="flex items-center justify-center space-x-2 mb-2">
@@ -151,7 +151,7 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
                                         {...register(ability.key as keyof AbilityScoresFormData, { valueAsNumber: true })}
                                         min="8"
                                         max="20"
-                                        className={`w-16 text-center px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors[ability.key as keyof AbilityScoresFormData] ? 'border-red-300' : 'border-gray-300'
+                                        className={`w-16 text-center px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${errors[ability.key as keyof AbilityScoresFormData] ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                                             }`}
                                     />
 
@@ -174,8 +174,8 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
                                 </div>
 
                                 <div className="text-center">
-                                    <div className="text-sm text-gray-600">Modifier: {modifier >= 0 ? '+' : ''}{modifier}</div>
-                                    <div className="text-xs text-gray-500">Cost: {cost} points</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">Modifier: {modifier >= 0 ? '+' : ''}{modifier}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-500">Cost: {cost} points</div>
                                 </div>
                             </div>
                         );

@@ -206,7 +206,7 @@ const CharacterEdit: React.FC = () => {
                     stepTitles={steps.map(s => s.title)}
                 />
 
-                <div className="wizard-content bg-white rounded-lg shadow-sm border p-6 mb-6">
+                <div className="wizard-content bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
                     <CurrentStepComponent
                         data={characterData}
                         onComplete={handleStepComplete}

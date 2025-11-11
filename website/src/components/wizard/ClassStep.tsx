@@ -99,17 +99,17 @@ export const ClassStep: React.FC<ClassStepProps> = ({
 
     return (
         <div className="class-step">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Class Selection</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Class Selection</h2>
 
             <div className="space-y-6">
                 <div>
-                    <label htmlFor="class" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="class" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Primary Class *
                     </label>
                     <select
                         id="class"
                         {...register('class')}
-                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.class ? 'border-red-300' : 'border-gray-300'
+                        className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${errors.class ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                             }`}
                     >
                         <option value="">Select a class</option>
@@ -126,13 +126,13 @@ export const ClassStep: React.FC<ClassStepProps> = ({
 
                 {availableSubclasses.length > 0 && (
                     <div>
-                        <label htmlFor="subclass" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="subclass" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Subclass
                         </label>
                         <select
                             id="subclass"
                             {...register('subclass')}
-                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.subclass ? 'border-red-300' : 'border-gray-300'
+                            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${errors.subclass ? 'border-red-300 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                                 }`}
                         >
                             <option value="">Select a subclass (optional)</option>
@@ -156,18 +156,18 @@ export const ClassStep: React.FC<ClassStepProps> = ({
                             onChange={(e) => setShowMulticlass(e.target.checked)}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
-                        <span className="ml-2 text-sm text-gray-700">Multiclass character</span>
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Multiclass character</span>
                     </label>
                 </div>
 
                 {showMulticlass && (
                     <div className="space-y-4">
-                        <h3 className="text-lg font-medium text-gray-900">Additional Classes</h3>
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Additional Classes</h3>
 
                         {fields.map((field, index) => (
-                            <div key={field.id} className="p-4 border border-gray-200 rounded-md">
+                            <div key={field.id} className="p-4 border border-gray-200 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-800">
                                 <div className="flex justify-between items-start mb-4">
-                                    <h4 className="text-sm font-medium text-gray-700">Class {index + 2}</h4>
+                                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Class {index + 2}</h4>
                                     <button
                                         type="button"
                                         onClick={() => remove(index)}
@@ -179,12 +179,12 @@ export const ClassStep: React.FC<ClassStepProps> = ({
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Class
                                         </label>
                                         <select
                                             {...register(`multiclass.${index}.class`)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                         >
                                             <option value="">Select class</option>
                                             {classOptions.map((className) => (
@@ -196,7 +196,7 @@ export const ClassStep: React.FC<ClassStepProps> = ({
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Level
                                         </label>
                                         <input
@@ -204,19 +204,19 @@ export const ClassStep: React.FC<ClassStepProps> = ({
                                             {...register(`multiclass.${index}.level`, { valueAsNumber: true })}
                                             min="1"
                                             max="20"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Subclass
                                         </label>
                                         <input
                                             type="text"
                                             {...register(`multiclass.${index}.subclass`)}
                                             placeholder="Optional"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                         />
                                     </div>
                                 </div>
@@ -226,7 +226,7 @@ export const ClassStep: React.FC<ClassStepProps> = ({
                         <button
                             type="button"
                             onClick={addMulticlass}
-                            className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             + Add Another Class
                         </button>
