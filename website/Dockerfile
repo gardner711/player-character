@@ -3,11 +3,15 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Accept build arguments
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including dev dependencies for build)
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -18,14 +22,17 @@ RUN npm run build
 # Production stage
 FROM nginx:alpine
 
+# Install envsubst for environment variable substitution
+RUN apk add --no-cache gettext
+
+# Copy nginx configuration template
+COPY nginx.conf /etc/nginx/nginx.conf.template
+
 # Copy built application from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Set default port
+ENV PORT=8764
 
-# Expose port 80
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Substitute environment variables and start nginx
+CMD ["/bin/sh", "-c", "envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]

@@ -107,7 +107,8 @@ const CharacterCreationWizard: React.FC<CharacterCreationWizardProps> = ({
     try {
       const client = new CharacterAPIClient(API_BASE_URL);
       const createdCharacter = await client.createCharacter(characterData as Character);
-      onComplete(createdCharacter);
+      // Navigate to character list with success message
+      navigate('/', { state: { successMessage: `Character "${createdCharacter.characterName}" created successfully!` } });
     } catch (error) {
       // Handle API errors
       setApiError(error.message);
@@ -869,6 +870,10 @@ describe('Character Validation', () => {
 describe('Character Creation Flow', () => {
   it('completes full character creation successfully', async () => {
     // Full integration test with mocked API
+    // Should navigate to character list with success message
+    expect(mockNavigate).toHaveBeenCalledWith('/', {
+      state: { successMessage: expect.stringContaining('created successfully') }
+    });
   });
 
   it('handles validation errors at each step', async () => {

@@ -9,6 +9,8 @@ import { AbilityScoresStep } from './wizard/AbilityScoresStep';
 import { BackgroundStep } from './wizard/BackgroundStep';
 import { ProgressIndicator } from './wizard/ProgressIndicator';
 import { StepNavigation } from './wizard/StepNavigation';
+import { JsonPreviewPanel } from './wizard/JsonPreviewPanel';
+import './wizard/wizard.css';
 
 interface CharacterCreateProps {
     className?: string;
@@ -21,6 +23,7 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [showJsonPreview, setShowJsonPreview] = useState(false);
 
     const steps = [
         { component: BasicInfoStep, title: 'Basic Information', validationSchema: basicInfoSchema },
@@ -79,7 +82,7 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
 
         try {
             const createdCharacter = await characterAPI.createCharacter(characterData as CharacterCreationData);
-            navigate(`/characters/${createdCharacter.id}`);
+            navigate('/', { state: { successMessage: `Character "${createdCharacter.characterName}" created successfully!` } });
         } catch (error) {
             setApiError(error instanceof Error ? error.message : 'Failed to create character');
         } finally {
@@ -138,6 +141,13 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
                     isSubmitting={isSubmitting}
                 />
             </div>
+
+            {/* JSON Preview Panel */}
+            <JsonPreviewPanel
+                characterData={characterData}
+                isVisible={showJsonPreview}
+                onToggleVisibility={() => setShowJsonPreview(!showJsonPreview)}
+            />
         </div>
     );
 };

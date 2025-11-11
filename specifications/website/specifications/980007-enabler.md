@@ -137,7 +137,8 @@ const CharacterEditWizard: React.FC<CharacterEditWizardProps> = ({
     try {
       const client = new CharacterAPIClient(API_BASE_URL);
       const updatedCharacter = await client.updateCharacter(characterId, editedCharacter as Character);
-      onComplete(updatedCharacter);
+      // Navigate to character list with success message
+      navigate('/', { state: { successMessage: `Character "${updatedCharacter.characterName}" updated successfully!` } });
     } catch (error) {
       if (error.status === 409) {
         setConflictError('Character was modified by another user. Please refresh and try again.');
@@ -737,6 +738,10 @@ describe('Change Tracking', () => {
 describe('Character Edit Flow', () => {
   it('completes full edit workflow successfully', async () => {
     // Full integration test with mocked API
+    // Should navigate to character list with success message
+    expect(mockNavigate).toHaveBeenCalledWith('/', {
+      state: { successMessage: expect.stringContaining('updated successfully') }
+    });
   });
 
   it('handles validation errors during editing', async () => {

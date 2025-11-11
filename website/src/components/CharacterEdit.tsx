@@ -9,6 +9,7 @@ import { AbilityScoresStep } from './wizard/AbilityScoresStep';
 import { BackgroundStep } from './wizard/BackgroundStep';
 import { ProgressIndicator } from './wizard/ProgressIndicator';
 import { StepNavigation } from './wizard/StepNavigation';
+import { JsonEditPreviewPanel } from './wizard/JsonEditPreviewPanel';
 
 const CharacterEdit: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ const CharacterEdit: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [modifiedFields, setModifiedFields] = useState<Set<string>>(new Set());
+    const [showJsonPreview, setShowJsonPreview] = useState(false);
 
     const steps = [
         { component: BasicInfoStep, title: 'Basic Information', validationSchema: basicInfoSchema },
@@ -133,7 +135,7 @@ const CharacterEdit: React.FC = () => {
 
         try {
             const updatedCharacter = await characterAPI.updateCharacter(id, characterData);
-            navigate(`/characters/${updatedCharacter.id}`);
+            navigate('/', { state: { successMessage: `Character "${updatedCharacter.characterName}" updated successfully!` } });
         } catch (error) {
             if (error instanceof Error && 'status' in error && error.status === 409) {
                 setApiError('Character was modified by another user. Please refresh and try again.');
@@ -251,6 +253,14 @@ const CharacterEdit: React.FC = () => {
                     canProceed={canProceed}
                     isLastStep={isLastStep}
                     isSubmitting={isSubmitting}
+                />
+
+                <JsonEditPreviewPanel
+                    originalCharacter={originalCharacter}
+                    currentData={characterData}
+                    modifiedFields={modifiedFields}
+                    isVisible={showJsonPreview}
+                    onToggleVisibility={() => setShowJsonPreview(!showJsonPreview)}
                 />
             </div>
         </div>
