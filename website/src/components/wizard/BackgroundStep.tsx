@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import { CharacterCreationData } from '../../types/character';
 interface BackgroundStepProps {
     data: Partial<CharacterCreationData>;
     onComplete: (data: Partial<CharacterCreationData>) => void;
+    onValidityChange?: (isValid: boolean) => void;
     validationSchema: z.ZodSchema;
 }
 
@@ -30,11 +31,12 @@ const alignmentOptions = [
 export const BackgroundStep: React.FC<BackgroundStepProps> = ({
     data,
     onComplete,
+    onValidityChange,
     validationSchema
 }) => {
     const {
         register,
-        handleSubmit,
+        watch,
         formState: { errors, isValid }
     } = useForm<BackgroundFormData>({
         resolver: zodResolver(validationSchema),
@@ -47,20 +49,29 @@ export const BackgroundStep: React.FC<BackgroundStepProps> = ({
         mode: 'onChange'
     });
 
-    const onSubmit = (formData: BackgroundFormData) => {
-        onComplete({
-            background: formData.background,
-            alignment: formData.alignment,
-            level: formData.level,
-            experiencePoints: formData.experiencePoints
-        });
-    };
+    // Call onValidityChange when form validity changes
+    useEffect(() => {
+        onValidityChange?.(isValid);
+    }, [isValid, onValidityChange]);
+
+    // Call onComplete when form becomes valid
+    useEffect(() => {
+        if (isValid) {
+            const formData = watch();
+            onComplete({
+                background: formData.background,
+                alignment: formData.alignment,
+                level: formData.level,
+                experiencePoints: formData.experiencePoints
+            });
+        }
+    }, [isValid, watch, onComplete]);
 
     return (
         <div className="background-step">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Background & Final Details</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-6">
                 <div>
                     <label htmlFor="background" className="block text-sm font-medium text-gray-700 mb-1">
                         Background
@@ -149,19 +160,7 @@ export const BackgroundStep: React.FC<BackgroundStepProps> = ({
                     </p>
                 </div>
 
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={!isValid}
-                        className={`px-6 py-3 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${isValid
-                                ? 'text-white bg-green-600 hover:bg-green-700'
-                                : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                            }`}
-                    >
-                        Create Character
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 };

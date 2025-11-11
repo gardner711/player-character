@@ -8,6 +8,7 @@ import { getSubraces } from '../../utils/validationSchemas';
 interface BasicInfoStepProps {
     data: Partial<CharacterCreationData>;
     onComplete: (data: Partial<CharacterCreationData>) => void;
+    onValidityChange?: (isValid: boolean) => void;
     validationSchema: z.ZodSchema;
 }
 
@@ -26,13 +27,13 @@ const raceOptions = [
 export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
     data,
     onComplete,
+    onValidityChange,
     validationSchema
 }) => {
     const [availableSubraces, setAvailableSubraces] = useState<string[]>([]);
 
     const {
         register,
-        handleSubmit,
         watch,
         setValue,
         formState: { errors, isValid }
@@ -49,6 +50,24 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
 
     const watchedRace = watch('race');
 
+    // Call onValidityChange when form validity changes
+    useEffect(() => {
+        onValidityChange?.(isValid);
+    }, [isValid, onValidityChange]);
+
+    // Call onComplete when form becomes valid
+    useEffect(() => {
+        if (isValid) {
+            const formData = watch();
+            onComplete({
+                characterName: formData.characterName,
+                playerName: formData.playerName,
+                race: formData.race,
+                subrace: formData.subrace
+            });
+        }
+    }, [isValid, watch, onComplete]);
+
     useEffect(() => {
         if (watchedRace) {
             const subraces = getSubraces(watchedRace);
@@ -61,20 +80,11 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
         }
     }, [watchedRace, watch, setValue]);
 
-    const onSubmit = (formData: BasicInfoFormData) => {
-        onComplete({
-            characterName: formData.characterName,
-            playerName: formData.playerName,
-            race: formData.race,
-            subrace: formData.subrace
-        });
-    };
-
     return (
         <div className="basic-info-step">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Basic Information</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-6">
                 <div>
                     <label htmlFor="characterName" className="block text-sm font-medium text-gray-700 mb-1">
                         Character Name *
@@ -155,19 +165,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
                     </div>
                 )}
 
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={!isValid}
-                        className={`px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isValid
-                                ? 'text-white bg-blue-600 hover:bg-blue-700'
-                                : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                            }`}
-                    >
-                        Continue to Class Selection
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 };

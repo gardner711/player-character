@@ -8,6 +8,7 @@ import { calculatePointCost } from '../../utils/validationSchemas';
 interface AbilityScoresStepProps {
     data: Partial<CharacterCreationData>;
     onComplete: (data: Partial<CharacterCreationData>) => void;
+    onValidityChange?: (isValid: boolean) => void;
     validationSchema: z.ZodSchema;
 }
 
@@ -34,13 +35,13 @@ const pointCosts = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 5, 7, 
 export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
     data,
     onComplete,
+    onValidityChange,
     validationSchema
 }) => {
     const [pointTotal, setPointTotal] = useState(0);
 
     const {
         register,
-        handleSubmit,
         watch,
         formState: { errors, isValid }
     } = useForm<AbilityScoresFormData>({
@@ -63,18 +64,27 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
         setPointTotal(total);
     }, [watchedScores]);
 
-    const onSubmit = (formData: AbilityScoresFormData) => {
-        onComplete({
-            abilityScores: {
-                strength: formData.strength,
-                dexterity: formData.dexterity,
-                constitution: formData.constitution,
-                intelligence: formData.intelligence,
-                wisdom: formData.wisdom,
-                charisma: formData.charisma
-            }
-        });
-    };
+    // Call onValidityChange when form validity changes
+    useEffect(() => {
+        onValidityChange?.(isValid);
+    }, [isValid, onValidityChange]);
+
+    // Call onComplete when form becomes valid
+    useEffect(() => {
+        if (isValid) {
+            const formData = watch();
+            onComplete({
+                abilityScores: {
+                    strength: formData.strength,
+                    dexterity: formData.dexterity,
+                    constitution: formData.constitution,
+                    intelligence: formData.intelligence,
+                    wisdom: formData.wisdom,
+                    charisma: formData.charisma
+                }
+            });
+        }
+    }, [isValid, watch, onComplete]);
 
     const getModifier = (score: number) => {
         return Math.floor((score - 10) / 2);
@@ -102,7 +112,7 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
                 )}
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {abilities.map((ability) => {
                         const score = watchedScores[ability.key as keyof AbilityScoresFormData] || 8;
@@ -178,19 +188,7 @@ export const AbilityScoresStep: React.FC<AbilityScoresStepProps> = ({
                     </div>
                 )}
 
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={!isValid || pointTotal > 27}
-                        className={`px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isValid && pointTotal <= 27
-                                ? 'text-white bg-blue-600 hover:bg-blue-700'
-                                : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                            }`}
-                    >
-                        Continue to Background
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 };

@@ -20,7 +20,7 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [characterData, setCharacterData] = useState<Partial<CharacterCreationData>>({});
-    const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+    const [stepValidity, setStepValidity] = useState<Record<number, boolean>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [showJsonPreview, setShowJsonPreview] = useState(false);
@@ -34,12 +34,15 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
 
     const currentStepData = steps[currentStep];
     const isLastStep = currentStep === steps.length - 1;
-    const canProceed = completedSteps.has(currentStep);
+    const canProceed = stepValidity[currentStep] || false;
 
     const handleStepComplete = (stepData: Partial<CharacterCreationData>) => {
         setCharacterData(prev => ({ ...prev, ...stepData }));
-        setCompletedSteps(prev => new Set([...prev, currentStep]));
         setApiError(null);
+    };
+
+    const handleStepValidityChange = (stepIndex: number, isValid: boolean) => {
+        setStepValidity(prev => ({ ...prev, [stepIndex]: isValid }));
     };
 
     const handleNext = () => {
@@ -111,6 +114,7 @@ const CharacterCreate: React.FC<CharacterCreateProps> = ({ className }) => {
                     <CurrentStepComponent
                         data={characterData}
                         onComplete={handleStepComplete}
+                        onValidityChange={(isValid: boolean) => handleStepValidityChange(currentStep, isValid)}
                         validationSchema={currentStepData.validationSchema}
                     />
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import { CharacterCreationData } from '../../types/character';
 interface ClassStepProps {
     data: Partial<CharacterCreationData>;
     onComplete: (data: Partial<CharacterCreationData>) => void;
+    onValidityChange?: (isValid: boolean) => void;
     validationSchema: z.ZodSchema;
 }
 
@@ -44,6 +45,7 @@ const subclassOptions: Record<string, string[]> = {
 export const ClassStep: React.FC<ClassStepProps> = ({
     data,
     onComplete,
+    onValidityChange,
     validationSchema
 }) => {
     const [showMulticlass, setShowMulticlass] = useState<boolean>(
@@ -52,7 +54,6 @@ export const ClassStep: React.FC<ClassStepProps> = ({
 
     const {
         register,
-        handleSubmit,
         watch,
         control,
         formState: { errors, isValid }
@@ -73,13 +74,22 @@ export const ClassStep: React.FC<ClassStepProps> = ({
 
     const watchedClass = watch('class');
 
-    const onSubmit = (formData: ClassFormData) => {
-        onComplete({
-            class: formData.class,
-            subclass: formData.subclass,
-            multiclass: showMulticlass ? formData.multiclass : undefined
-        });
-    };
+    // Call onValidityChange when form validity changes
+    useEffect(() => {
+        onValidityChange?.(isValid);
+    }, [isValid, onValidityChange]);
+
+    // Call onComplete when form becomes valid
+    useEffect(() => {
+        if (isValid) {
+            const formData = watch();
+            onComplete({
+                class: formData.class,
+                subclass: formData.subclass,
+                multiclass: showMulticlass ? formData.multiclass : undefined
+            });
+        }
+    }, [isValid, watch, onComplete, showMulticlass]);
 
     const addMulticlass = () => {
         append({ class: '', subclass: '', level: 1 });
@@ -91,7 +101,7 @@ export const ClassStep: React.FC<ClassStepProps> = ({
         <div className="class-step">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Class Selection</h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-6">
                 <div>
                     <label htmlFor="class" className="block text-sm font-medium text-gray-700 mb-1">
                         Primary Class *
@@ -223,19 +233,7 @@ export const ClassStep: React.FC<ClassStepProps> = ({
                     </div>
                 )}
 
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={!isValid}
-                        className={`px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isValid
-                                ? 'text-white bg-blue-600 hover:bg-blue-700'
-                                : 'text-gray-400 bg-gray-200 cursor-not-allowed'
-                            }`}
-                    >
-                        Continue to Ability Scores
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 };

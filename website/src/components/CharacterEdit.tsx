@@ -17,7 +17,7 @@ const CharacterEdit: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [originalCharacter, setOriginalCharacter] = useState<Character | null>(null);
     const [characterData, setCharacterData] = useState<Partial<CharacterCreationData>>({});
-    const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+    const [stepValidity, setStepValidity] = useState<Record<number, boolean>>({});
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
@@ -73,7 +73,7 @@ const CharacterEdit: React.FC = () => {
 
     const currentStepData = steps[currentStep];
     const isLastStep = currentStep === steps.length - 1;
-    const canProceed = completedSteps.has(currentStep);
+    const canProceed = stepValidity[currentStep] || false;
     const hasChanges = modifiedFields.size > 0;
 
     const getModifiedFields = (original: Character, current: Partial<CharacterCreationData>): Set<string> => {
@@ -105,7 +105,6 @@ const CharacterEdit: React.FC = () => {
     const handleStepComplete = (stepData: Partial<CharacterCreationData>) => {
         const newData = { ...characterData, ...stepData };
         setCharacterData(newData);
-        setCompletedSteps(prev => new Set([...prev, currentStep]));
         setApiError(null);
 
         // Track changes
@@ -113,6 +112,10 @@ const CharacterEdit: React.FC = () => {
             const changes = getModifiedFields(originalCharacter, newData);
             setModifiedFields(changes);
         }
+    };
+
+    const handleStepValidityChange = (stepIndex: number, isValid: boolean) => {
+        setStepValidity(prev => ({ ...prev, [stepIndex]: isValid }));
     };
 
     const handleNext = () => {
@@ -207,6 +210,7 @@ const CharacterEdit: React.FC = () => {
                     <CurrentStepComponent
                         data={characterData}
                         onComplete={handleStepComplete}
+                        onValidityChange={(isValid: boolean) => handleStepValidityChange(currentStep, isValid)}
                         validationSchema={currentStepData.validationSchema}
                     />
                 </div>
