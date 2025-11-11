@@ -117,6 +117,78 @@
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Sort Toggle Buttons Styles */
+.sort-toggle-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.sort-buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.sort-button {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background-color: white;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.sort-button:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.sort-button.active {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.sort-button.active:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* Dark mode styles for sort toggle buttons */
+.dark .sort-button {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.dark .sort-button:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-hover);
+}
+
+.dark .sort-button.active {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.dark .sort-button.active:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.direction-icon {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
 /* Character Grid Styles */
 .character-grid {
     display: grid;

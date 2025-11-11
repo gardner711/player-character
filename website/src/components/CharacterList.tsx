@@ -4,7 +4,7 @@ import { useCharacterList, SortField, SortDirection } from '../hooks/useCharacte
 import { useSearch } from '../hooks/useSearch';
 import { useSorting } from '../hooks/useSorting';
 import { SearchBar } from './SearchBar';
-import { SortDropdown } from './SortDropdown';
+import { SortToggleButtons } from './SortToggleButtons';
 import { CharacterTile } from './CharacterTile';
 import { Pagination } from './Pagination';
 import { LoadingSkeleton } from './LoadingSkeleton';
@@ -108,7 +108,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
                     />
                 )}
                 {enableSorting && (
-                    <SortDropdown
+                    <SortToggleButtons
                         currentField={sortField}
                         currentDirection={sortDirection}
                         onSortChange={handleSortChange}
