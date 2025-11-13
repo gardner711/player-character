@@ -1,0 +1,729 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/dnd5e-monster-encounter.schema.json",
+    "title": "D&D 5e Monster & Encounter",
+    "description": "Comprehensive JSON Schema for defining monsters (NPCs, creatures) and full encounters in D&D 5e.",
+    "oneOf": [
+        {
+            "$ref": "#/definitions/monster"
+        },
+        {
+            "$ref": "#/definitions/encounter"
+        }
+    ],
+    "definitions": {
+        "monster": {
+            "type": "object",
+            "required": [
+                "name",
+                "size",
+                "type",
+                "alignment",
+                "cr",
+                "ac",
+                "hp"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Monster name (e.g., 'Adult Red Dragon')."
+                },
+                "size": {
+                    "type": "string",
+                    "enum": [
+                        "Tiny",
+                        "Small",
+                        "Medium",
+                        "Large",
+                        "Huge",
+                        "Gargantuan"
+                    ],
+                    "description": "Creature size category."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Creature type (e.g., 'dragon', 'undead', 'humanoid')."
+                },
+                "subtype": {
+                    "type": "string",
+                    "description": "(Optional) Subtype (e.g., 'red', 'zombie')."
+                },
+                "alignment": {
+                    "type": "string",
+                    "enum": [
+                        "lawful good",
+                        "neutral good",
+                        "chaotic good",
+                        "lawful neutral",
+                        "neutral",
+                        "chaotic neutral",
+                        "lawful evil",
+                        "neutral evil",
+                        "chaotic evil",
+                        "unaligned"
+                    ]
+                },
+                "cr": {
+                    "type": "number",
+                    "description": "Challenge Rating (e.g., 13, 0.5)."
+                },
+                "xp": {
+                    "type": "integer",
+                    "description": "Experience points awarded."
+                },
+                "ac": {
+                    "type": [
+                        "integer",
+                        "string"
+                    ],
+                    "description": "Armor Class (e.g., 19 or 'natural armor')."
+                },
+                "hp": {
+                    "type": "object",
+                    "required": [
+                        "average",
+                        "dice"
+                    ],
+                    "properties": {
+                        "average": {
+                            "type": "integer"
+                        },
+                        "dice": {
+                            "type": "string",
+                            "pattern": "^\\d+d\\d+(?:\\s*\\+\\s*\\d+)?$"
+                        },
+                        "max": {
+                            "type": "integer"
+                        }
+                    },
+                    "description": "Hit Points."
+                },
+                "speed": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "walk": {
+                                "type": "integer"
+                            },
+                            "fly": {
+                                "type": "integer"
+                            },
+                            "swim": {
+                                "type": "integer"
+                            },
+                            "burrow": {
+                                "type": "integer"
+                            },
+                            "climb": {
+                                "type": "integer"
+                            },
+                            "hover": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "description": "Speed(s) in feet."
+                },
+                "initiative": {
+                    "type": "integer",
+                    "description": "Dexterity modifier for initiative."
+                },
+                "senses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": [
+                        "blindsight 60 ft.",
+                        "keen smell",
+                        "truesight 120 ft."
+                    ]
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": [
+                        "Common",
+                        "Draconic",
+                        "telepathy 120 ft."
+                    ]
+                },
+                "challengeRating": {
+                    "$ref": "#/definitions/challengeRating"
+                },
+                "abilityScores": {
+                    "type": "object",
+                    "properties": {
+                        "str": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        },
+                        "dex": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        },
+                        "con": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        },
+                        "int": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        },
+                        "wis": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        },
+                        "cha": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 30
+                        }
+                    },
+                    "required": [
+                        "str",
+                        "dex",
+                        "con",
+                        "int",
+                        "wis",
+                        "cha"
+                    ],
+                    "description": "6 ability scores."
+                },
+                "savingThrows": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^(str|dex|con|int|wis|cha)$": {
+                            "type": "integer"
+                        }
+                    },
+                    "description": "Saving throw proficiencies and bonuses."
+                },
+                "skills": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^(acrobatics|animal handling|arcana|athletics|deception|history|insight|intimidation|investigation|medicine|nature|perception|performance|persuasion|religion|sleight of hand|stealth|survival)$": {
+                            "type": "integer"
+                        }
+                    },
+                    "description": "Skill proficiencies and bonuses."
+                },
+                "vulnerabilities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/damageType"
+                    }
+                },
+                "resistances": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/damageType"
+                    }
+                },
+                "immunities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/damageType"
+                    }
+                },
+                "conditionImmunities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "blinded",
+                            "charmed",
+                            "deafened",
+                            "frightened",
+                            "grappled",
+                            "incapacitated",
+                            "invisible",
+                            "paralyzed",
+                            "petrified",
+                            "poisoned",
+                            "prone",
+                            "restrained",
+                            "stunned",
+                            "unconscious"
+                        ]
+                    }
+                },
+                "actions": {
+                    "$ref": "#/definitions/actions"
+                },
+                "legendaryActions": {
+                    "$ref": "#/definitions/actions",
+                    "description": "Legendary actions available."
+                },
+                "reactions": {
+                    "$ref": "#/definitions/actions"
+                },
+                "legendaryResistance": {
+                    "type": "object",
+                    "properties": {
+                        "uses": {
+                            "type": "integer"
+                        },
+                        "charges": {
+                            "type": "integer"
+                        },
+                        "recharge": {
+                            "type": "string"
+                        }
+                    },
+                    "description": "Legendary resistance details."
+                },
+                "lairActions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "initiative": {
+                                "type": "integer"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "save": {
+                                "type": "string"
+                            },
+                            "dc": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "traits": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "description"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "recharge": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "description": "Special traits (e.g., 'Amphibious')."
+                },
+                "equipment": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/itemRef"
+                    }
+                },
+                "loot": {
+                    "$ref": "#/definitions/treasure"
+                },
+                "tactics": {
+                    "type": "string",
+                    "description": "Combat tactics and behavior."
+                },
+                "source": {
+                    "type": "string",
+                    "description": "Book reference (e.g., 'MM 81')."
+                }
+            }
+        },
+        "encounter": {
+            "type": "object",
+            "required": [
+                "name",
+                "monsters",
+                "environment",
+                "xp",
+                "difficulty"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "environment": {
+                    "type": "string",
+                    "description": "Encounter terrain (e.g., 'forest ambush')."
+                },
+                "levelRange": {
+                    "type": "object",
+                    "properties": {
+                        "min": {
+                            "type": "integer"
+                        },
+                        "max": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "monsters": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "monster"
+                        ],
+                        "properties": {
+                            "monster": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/definitions/monster"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            },
+                            "count": {
+                                "type": "object",
+                                "properties": {
+                                    "fixed": {
+                                        "type": "integer"
+                                    },
+                                    "dice": {
+                                        "type": "string",
+                                        "pattern": "^\\d+d\\d+$"
+                                    }
+                                }
+                            },
+                            "hpMultiplier": {
+                                "type": "object",
+                                "properties": {
+                                    "min": {
+                                        "type": "number",
+                                        "minimum": 0.5
+                                    },
+                                    "max": {
+                                        "type": "number",
+                                        "maximum": 2.0
+                                    }
+                                }
+                            },
+                            "position": {
+                                "type": "string"
+                            },
+                            "role": {
+                                "type": "string",
+                                "enum": [
+                                    "leader",
+                                    "minion",
+                                    "skirmisher",
+                                    "bruiser",
+                                    "controller"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "xp": {
+                    "type": "object",
+                    "properties": {
+                        "adjusted": {
+                            "type": "integer"
+                        },
+                        "raw": {
+                            "type": "integer"
+                        },
+                        "multiplier": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "difficulty": {
+                    "type": "string",
+                    "enum": [
+                        "trivial",
+                        "easy",
+                        "medium",
+                        "hard",
+                        "deadly"
+                    ]
+                },
+                "terrain": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": [
+                        "difficult terrain",
+                        "cover",
+                        "darkness"
+                    ]
+                },
+                "ambush": {
+                    "type": "boolean"
+                },
+                "surprise": {
+                    "type": "boolean"
+                },
+                "traps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trapRef"
+                    }
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "round": {
+                                "type": "integer"
+                            },
+                            "initiative": {
+                                "type": "integer"
+                            },
+                            "effect": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "loot": {
+                    "$ref": "#/definitions/treasure"
+                }
+            }
+        },
+        "challengeRating": {
+            "type": "object",
+            "properties": {
+                "cr": {
+                    "type": "number"
+                },
+                "proficiencyBonus": {
+                    "type": "integer"
+                },
+                "hp": {
+                    "type": "integer"
+                },
+                "ac": {
+                    "type": "integer"
+                },
+                "dpr": {
+                    "type": "integer"
+                },
+                "atk": {
+                    "type": "integer"
+                },
+                "save": {
+                    "type": "integer"
+                }
+            }
+        },
+        "actions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "attack": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "melee",
+                                    "ranged",
+                                    "spell"
+                                ]
+                            },
+                            "range": {
+                                "type": "integer"
+                            },
+                            "target": {
+                                "type": "string"
+                            },
+                            "hit": {
+                                "type": "object",
+                                "properties": {
+                                    "dice": {
+                                        "type": "string",
+                                        "pattern": "^\\d+d\\d+(?:\\s*\\+\\s*\\d+)?$"
+                                    },
+                                    "type": {
+                                        "$ref": "#/definitions/damageType"
+                                    }
+                                }
+                            },
+                            "miss": {
+                                "type": "object",
+                                "properties": {
+                                    "dice": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "$ref": "#/definitions/damageType"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "recharge": {
+                        "type": "integer"
+                    },
+                    "bonusAction": {
+                        "type": "boolean"
+                    },
+                    "cantrip": {
+                        "type": "boolean"
+                    },
+                    "concentration": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "damageType": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "bludgeoning",
+                        "piercing",
+                        "slashing",
+                        "acid",
+                        "cold",
+                        "fire",
+                        "force",
+                        "lightning",
+                        "necrotic",
+                        "poison",
+                        "psychic",
+                        "radiant",
+                        "thunder"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "bludgeoning",
+                                "piercing",
+                                "slashing",
+                                "acid",
+                                "cold",
+                                "fire",
+                                "force",
+                                "lightning",
+                                "necrotic",
+                                "poison",
+                                "psychic",
+                                "radiant",
+                                "thunder"
+                            ]
+                        },
+                        "from": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "itemRef": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "treasure": {
+            "type": "object",
+            "properties": {
+                "coins": {
+                    "type": "object",
+                    "properties": {
+                        "cp": {
+                            "type": "integer"
+                        },
+                        "sp": {
+                            "type": "integer"
+                        },
+                        "ep": {
+                            "type": "integer"
+                        },
+                        "gp": {
+                            "type": "integer"
+                        },
+                        "pp": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/itemRef"
+                    }
+                },
+                "art": {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "gems": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "integer"
+                            },
+                            "quantity": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "trapRef": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

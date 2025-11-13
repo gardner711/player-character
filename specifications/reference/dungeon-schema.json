@@ -1,0 +1,456 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/dnd5e-dungeon.schema.json",
+    "title": "D&D 5e Dungeon",
+    "description": "JSON Schema for mapping out a complete D&D 5e dungeon with rooms, connections, monsters, traps, treasures, and more.",
+    "type": "object",
+    "required": [
+        "name",
+        "rooms"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the dungeon."
+        },
+        "description": {
+            "type": "string",
+            "description": "Overall dungeon description, lore, or DM notes."
+        },
+        "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Total width of the dungeon."
+        },
+        "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Total height of the dungeon."
+        },
+        "level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "Recommended party level range (average)."
+        },
+        "environment": {
+            "type": "string",
+            "description": "Dungeon environment (e.g., 'underdark', 'ancient tomb', 'haunted castle')."
+        },
+        "randomEncounters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "frequency",
+                    "encounters"
+                ],
+                "properties": {
+                    "frequency": {
+                        "type": "string",
+                        "enum": [
+                            "1d4 hours",
+                            "1d6 hours",
+                            "every 10 rooms",
+                            "none"
+                        ]
+                    },
+                    "encounters": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "encounter-schema.json#/definitions/encounter"
+                        }
+                    }
+                }
+            },
+            "description": "Random encounter tables for wandering monsters."
+        },
+        "rooms": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/room"
+            },
+            "description": "Array of all rooms in the dungeon."
+        }
+    },
+    "definitions": {
+        "room": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "size",
+                "connections"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "Unique room ID (used for connections)."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Room name (e.g., 'Entrance Chamber')."
+                },
+                "size": {
+                    "type": "string",
+                    "enum": [
+                        "tiny",
+                        "small",
+                        "medium",
+                        "large",
+                        "huge"
+                    ],
+                    "description": "Room size for combat (5x5, 10x10, 15x15, 20x20, 30x30 ft grids)."
+                },
+                "terrain": {
+                    "type": "string",
+                    "description": "Floor type (e.g., 'stone', 'wood', 'water', 'lava')."
+                },
+                "lighting": {
+                    "type": "string",
+                    "enum": [
+                        "bright",
+                        "dim",
+                        "darkness",
+                        "magical darkness"
+                    ],
+                    "description": "Default lighting conditions."
+                },
+                "temperature": {
+                    "type": "string",
+                    "enum": [
+                        "cold",
+                        "normal",
+                        "hot"
+                    ],
+                    "description": "Temperature effects."
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/feature"
+                    },
+                    "description": "Static features like altars, pools, statues."
+                },
+                "monsters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "encounter-schema.json#/definitions/monster"
+                    },
+                    "description": "Creatures currently in the room."
+                },
+                "traps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/trap"
+                    },
+                    "description": "Traps in the room."
+                },
+                "treasures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/treasure"
+                    },
+                    "description": "Treasure containers or loose items."
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "trigger",
+                            "effect"
+                        ],
+                        "properties": {
+                            "trigger": {
+                                "type": "string",
+                                "description": "What triggers the event (e.g., 'entering room', 'searching altar')."
+                            },
+                            "effect": {
+                                "type": "string",
+                                "description": "What happens (e.g., 'summon 1d4 skeletons', 'collapse ceiling')."
+                            }
+                        }
+                    },
+                    "description": "Scripted events or triggers."
+                },
+                "connections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/connection"
+                    },
+                    "description": "Doors, passages, stairs connecting to other rooms."
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "DM-only notes."
+                }
+            }
+        },
+        "connection": {
+            "type": "object",
+            "required": [
+                "toRoom",
+                "type"
+            ],
+            "properties": {
+                "toRoom": {
+                    "type": "integer",
+                    "description": "Target room ID."
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "door",
+                        "secret door",
+                        "archway",
+                        "stairs down",
+                        "stairs up",
+                        "chasm",
+                        "portal"
+                    ]
+                },
+                "direction": {
+                    "type": "string",
+                    "enum": [
+                        "north",
+                        "south",
+                        "east",
+                        "west",
+                        "up",
+                        "down",
+                        "center"
+                    ],
+                    "description": "Compass direction or position."
+                },
+                "locked": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "dc": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 30,
+                    "description": "DC to unlock/pick (if locked)."
+                },
+                "key": {
+                    "type": "string",
+                    "description": "Specific key or item required."
+                },
+                "hidden": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "revealDC": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 30,
+                    "description": "Perception/Investigation DC to find (if hidden)."
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "trap": {
+            "type": "object",
+            "required": [
+                "name",
+                "trigger",
+                "effect",
+                "dc"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "trigger": {
+                    "type": "string",
+                    "enum": [
+                        "pressure plate",
+                        "tripwire",
+                        "proximity",
+                        "spell glyph",
+                        "rune"
+                    ]
+                },
+                "detectDC": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 30
+                },
+                "disableDC": {
+                    "type": "integer",
+                    "minimum": 10,
+                    "maximum": 30
+                },
+                "effect": {
+                    "type": "string",
+                    "description": "Damage/healing amount and type (e.g., '4d10 fire', 'restrain', 'poison 3d6')."
+                },
+                "save": {
+                    "type": "string",
+                    "enum": [
+                        "dex",
+                        "con",
+                        "int",
+                        "wis",
+                        "cha",
+                        "str",
+                        "none"
+                    ]
+                },
+                "damage": {
+                    "type": "object",
+                    "properties": {
+                        "dice": {
+                            "type": "string",
+                            "pattern": "^\\d+d\\d+(?:\\s*\\+\\s*\\d+)?$"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "bludgeoning",
+                                "piercing",
+                                "slashing",
+                                "acid",
+                                "cold",
+                                "fire",
+                                "force",
+                                "lightning",
+                                "necrotic",
+                                "poison",
+                                "psychic",
+                                "radiant",
+                                "thunder",
+                                "none"
+                            ]
+                        }
+                    }
+                },
+                "repeatable": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "resetTime": {
+                    "type": "string",
+                    "enum": [
+                        "instant",
+                        "1 minute",
+                        "1 hour",
+                        "dawn",
+                        "manual"
+                    ]
+                }
+            }
+        },
+        "treasure": {
+            "type": "object",
+            "required": [
+                "container"
+            ],
+            "properties": {
+                "container": {
+                    "type": "string",
+                    "enum": [
+                        "chest",
+                        "sack",
+                        "barrel",
+                        "loose",
+                        "corpse",
+                        "altar",
+                        "statue"
+                    ]
+                },
+                "trapped": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "trap": {
+                    "$ref": "#/definitions/trap"
+                },
+                "locked": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "item-schema.json#/definitions/item"
+                    }
+                },
+                "coins": {
+                    "type": "object",
+                    "properties": {
+                        "cp": {
+                            "type": "integer"
+                        },
+                        "sp": {
+                            "type": "integer"
+                        },
+                        "ep": {
+                            "type": "integer"
+                        },
+                        "gp": {
+                            "type": "integer"
+                        },
+                        "pp": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "feature": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "pillar",
+                        "pool",
+                        "altar",
+                        "statue",
+                        "fountain",
+                        "bookshelf",
+                        "lever",
+                        "valve"
+                    ]
+                },
+                "description": {
+                    "type": "string"
+                },
+                "interaction": {
+                    "type": "string",
+                    "description": "What happens when interacted with."
+                },
+                "dc": {
+                    "type": "integer"
+                }
+            }
+        },
+        "encounter": {
+            "type": "object",
+            "properties": {
+                "monsters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "encounter-schema.json#/definitions/monster"
+                    }
+                },
+                "terrain": {
+                    "type": "string"
+                },
+                "ambush": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

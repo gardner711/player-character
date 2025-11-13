@@ -664,160 +664,39 @@
                 "weapons": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string",
-                                "description": "Weapon type (e.g., Simple Melee, Martial Ranged)"
-                            },
-                            "damage": {
-                                "type": "string",
-                                "description": "Damage dice (e.g., 1d8)"
-                            },
-                            "damageType": {
-                                "type": "string",
-                                "description": "Damage type (e.g., Slashing, Piercing, Bludgeoning)"
-                            },
-                            "properties": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "description": "Weapon properties (e.g., Finesse, Versatile, Two-Handed, Range)"
-                            },
-                            "attackBonus": {
-                                "type": "integer",
-                                "description": "Total attack bonus including ability modifier and proficiency"
-                            },
-                            "damageBonus": {
-                                "type": "integer",
-                                "description": "Damage bonus from ability modifier"
-                            },
-                            "magical": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "magicalBonus": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "default": 0
-                            },
-                            "equipped": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "quantity": {
-                                "type": "integer",
-                                "minimum": 1,
-                                "default": 1
-                            },
-                            "weight": {
-                                "type": "number",
-                                "description": "Weight in pounds"
-                            },
-                            "description": {
-                                "type": "string"
-                            }
+                        "$ref": "item-schema.json#/definitions/item"
+                    },
+                    "description": "Array of references to item-schema.json for weapon items.",
+                    "properties": {
+                        "type": {
+                            "const": "weapon"
                         }
-                    }
+                    },
+                    "required": [
+                        "type"
+                    ]
                 },
                 "armor": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string",
-                                "enum": [
-                                    "Light Armor",
-                                    "Medium Armor",
-                                    "Heavy Armor",
-                                    "Shield"
-                                ]
-                            },
-                            "armorClass": {
-                                "type": "integer",
-                                "description": "Base AC or AC bonus"
-                            },
-                            "dexterityBonus": {
-                                "type": "string",
-                                "description": "How Dex modifier applies (e.g., 'full', 'max 2', 'none')"
-                            },
-                            "stealthDisadvantage": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "strengthRequirement": {
-                                "type": "integer",
-                                "description": "Minimum Strength required"
-                            },
-                            "magical": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "magicalBonus": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "default": 0
-                            },
-                            "equipped": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "weight": {
-                                "type": "number",
-                                "description": "Weight in pounds"
-                            },
-                            "description": {
-                                "type": "string"
-                            }
+                        "$ref": "item-schema.json#/definitions/item"
+                    },
+                    "description": "Array of references to item-schema.json for armor items.",
+                    "properties": {
+                        "type": {
+                            "const": "armor"
                         }
-                    }
+                    },
+                    "required": [
+                        "type"
+                    ]
                 },
                 "equipment": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string",
-                                "description": "Equipment category (e.g., Adventuring Gear, Tool, Potion, Scroll, Magic Item)"
-                            },
-                            "quantity": {
-                                "type": "integer",
-                                "minimum": 1,
-                                "default": 1
-                            },
-                            "weight": {
-                                "type": "number",
-                                "description": "Weight in pounds per item"
-                            },
-                            "description": {
-                                "type": "string"
-                            },
-                            "magical": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "attunement": {
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "attuned": {
-                                "type": "boolean",
-                                "default": false
-                            }
-                        }
-                    }
+                        "$ref": "item-schema.json#/definitions/item"
+                    },
+                    "description": "Array of references to item-schema.json for equipment items."
                 },
                 "carryingCapacity": {
                     "type": "object",

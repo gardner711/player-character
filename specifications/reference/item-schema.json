@@ -1,0 +1,243 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/dnd5e-item.schema.json",
+    "title": "D&D 5e Item",
+    "description": "JSON Schema encapsulating any item (weapon, armor, potion, ring, rations, etc.) in D&D 5e, with full support for magic item properties.",
+    "type": "object",
+    "required": [
+        "name",
+        "type",
+        "rarity"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the item."
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "weapon",
+                "armor",
+                "potion",
+                "ring",
+                "scroll",
+                "wand",
+                "staff",
+                "other"
+            ],
+            "description": "The broad macro category of the item for quick filtering."
+        },
+        "subType": {
+            "type": "string",
+            "enum": [
+                "adventuring gear",
+                "ammunition",
+                "armor",
+                "artisan's tools",
+                "gaming set",
+                "heavy armor",
+                "light armor",
+                "medium armor",
+                "musical instrument",
+                "potion",
+                "ring",
+                "rod",
+                "scroll",
+                "shield",
+                "simple melee weapon",
+                "simple ranged weapon",
+                "martial melee weapon",
+                "martial ranged weapon",
+                "staff",
+                "tool",
+                "wand",
+                "wondrous item",
+                "other"
+            ],
+            "description": "The general category of the item. Uses official 5e subtypes where applicable."
+        },
+        "rarity": {
+            "type": "string",
+            "enum": [
+                "common",
+                "uncommon",
+                "rare",
+                "very rare",
+                "legendary",
+                "artifact",
+                "varies",
+                "unknown",
+                "unknown (requires attunement)"
+            ],
+            "description": "Item rarity as defined in the DMG."
+        },
+        "isMagic": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the item has any magical properties (even if mundane in base form, like +1 sword)."
+        },
+        "magicBonus": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "description": "The flat magical bonus to attack and damage rolls (e.g., +1, +2, +3). Use 0 for non-weapon/armor or no bonus."
+        },
+        "weight": {
+            "type": "number",
+            "description": "Weight in pounds."
+        },
+        "cost": {
+            "type": "number",
+            "description": "Cost in gold pieces."
+        },
+        "description": {
+            "type": "string",
+            "description": "Full flavor and mechanical text description."
+        },
+        "properties": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "List of special properties (e.g., 'finesse', 'thrown', 'ammunition', 'versatile')."
+        },
+        "damage": {
+            "type": "object",
+            "properties": {
+                "dice": {
+                    "type": "string",
+                    "pattern": "^\\d+d\\d+$"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "description": "Damage for weapons."
+        },
+        "armorClass": {
+            "type": "object",
+            "properties": {
+                "base": {
+                    "type": "integer"
+                },
+                "dexBonus": {
+                    "type": "boolean"
+                },
+                "maxDexBonus": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "strengthRequired": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "stealthDisadvantage": {
+                    "type": "boolean"
+                }
+            },
+            "description": "Armor class details for armor and shields."
+        },
+        "charges": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "max": {
+                    "type": "integer"
+                },
+                "recharge": {
+                    "type": "string",
+                    "enum": [
+                        "dawn",
+                        "dusk",
+                        "long rest",
+                        "short rest",
+                        "none"
+                    ]
+                }
+            },
+            "description": "For items with limited charges (e.g., wands, staffs)."
+        },
+        "curse": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the item bears a curse."
+        },
+        "curseDescription": {
+            "type": "string",
+            "description": "Description of the curse effect. Only present if curse is true."
+        },
+        "source": {
+            "type": "string",
+            "description": "Book and page reference (e.g., 'PHB 150', 'DMG 200')."
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Optional tags for filtering (e.g., ['homebrew', 'consumable', 'treasure'])."
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "curse": {
+                        "const": true
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "curseDescription"
+                ]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "type": {
+                        "enum": [
+                            "simple melee weapon",
+                            "simple ranged weapon",
+                            "martial melee weapon",
+                            "martial ranged weapon"
+                        ]
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "damage"
+                ]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "type": {
+                        "enum": [
+                            "light armor",
+                            "medium armor",
+                            "heavy armor",
+                            "shield"
+                        ]
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "armorClass"
+                ]
+            }
+        }
+    ],
+    "additionalProperties": false
+}
