@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Character, CharacterCreationData } from '../../types/character';
 
 interface JsonEditPreviewPanelProps {
@@ -10,6 +10,8 @@ interface JsonEditPreviewPanelProps {
     className?: string;
 }
 
+type ViewMode = 'original' | 'current' | 'both';
+
 export const JsonEditPreviewPanel: React.FC<JsonEditPreviewPanelProps> = ({
     originalCharacter,
     currentData,
@@ -18,6 +20,7 @@ export const JsonEditPreviewPanel: React.FC<JsonEditPreviewPanelProps> = ({
     onToggleVisibility,
     className
 }) => {
+    const [viewMode, setViewMode] = useState<ViewMode>('both');
     // Transform current data to API format for preview
     const currentApiFormat = useMemo(() => {
         try {
@@ -146,6 +149,22 @@ export const JsonEditPreviewPanel: React.FC<JsonEditPreviewPanelProps> = ({
                 </h3>
                 <div className="json-preview-actions">
                     <button
+                        className={`view-toggle-button ${viewMode === 'original' ? 'active' : ''}`}
+                        onClick={() => setViewMode(viewMode === 'original' ? 'both' : 'original')}
+                        aria-label="Toggle original view"
+                        title="Show Original Data"
+                    >
+                        Original
+                    </button>
+                    <button
+                        className={`view-toggle-button ${viewMode === 'current' ? 'active' : ''}`}
+                        onClick={() => setViewMode(viewMode === 'current' ? 'both' : 'current')}
+                        aria-label="Toggle current view"
+                        title="Show Current Data"
+                    >
+                        Current
+                    </button>
+                    <button
                         className="copy-button"
                         onClick={() => copyToClipboard(originalCharacter, 'original')}
                         aria-label="Copy original JSON to clipboard"
@@ -173,23 +192,27 @@ export const JsonEditPreviewPanel: React.FC<JsonEditPreviewPanelProps> = ({
             </div>
             <div className="json-preview-content">
                 <div className="json-comparison">
-                    <div className="json-column">
-                        <h4 className="json-column-title">Original Character</h4>
-                        <pre className="json-preview-code">
-                            <code dangerouslySetInnerHTML={{ __html: originalJsonHtml }} />
-                        </pre>
-                    </div>
-                    <div className="json-column">
-                        <h4 className="json-column-title">
-                            Current Changes
-                            {modifiedFields.size > 0 && (
-                                <span className="modified-indicator">Modified</span>
-                            )}
-                        </h4>
-                        <pre className="json-preview-code">
-                            <code dangerouslySetInnerHTML={{ __html: currentJsonHtml }} />
-                        </pre>
-                    </div>
+                    {(viewMode === 'original' || viewMode === 'both') && (
+                        <div className="json-column">
+                            <h4 className="json-column-title">Original Character</h4>
+                            <pre className="json-preview-code">
+                                <code dangerouslySetInnerHTML={{ __html: originalJsonHtml }} />
+                            </pre>
+                        </div>
+                    )}
+                    {(viewMode === 'current' || viewMode === 'both') && (
+                        <div className="json-column">
+                            <h4 className="json-column-title">
+                                Current Changes
+                                {modifiedFields.size > 0 && (
+                                    <span className="modified-indicator">Modified</span>
+                                )}
+                            </h4>
+                            <pre className="json-preview-code">
+                                <code dangerouslySetInnerHTML={{ __html: currentJsonHtml }} />
+                            </pre>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

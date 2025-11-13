@@ -57,6 +57,7 @@
 }
 
 .copy-button,
+.view-toggle-button,
 .json-preview-toggle {
     display: flex;
     align-items: center;
@@ -73,6 +74,7 @@
 }
 
 .dark .copy-button,
+.dark .view-toggle-button,
 .dark .json-preview-toggle {
     background-color: #374151;
     border-color: #4b5563;
@@ -80,15 +82,29 @@
 }
 
 .copy-button:hover,
+.view-toggle-button:hover,
 .json-preview-toggle:hover {
     background-color: #f9fafb;
     border-color: #9ca3af;
 }
 
 .dark .copy-button:hover,
+.dark .view-toggle-button:hover,
 .dark .json-preview-toggle:hover {
     background-color: #4b5563;
     border-color: #6b7280;
+}
+
+.view-toggle-button.active {
+    background-color: #3b82f6;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+.dark .view-toggle-button.active {
+    background-color: #1d4ed8;
+    border-color: #1e40af;
+    color: #ffffff;
 }
 
 .toggle-icon {
